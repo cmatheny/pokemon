@@ -1,1 +1,42 @@
-hi
+<html>
+    <head>
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <title>Pokemon Battle Arena</title>
+        <link rel="icon" type="image/png" sizes="96x96" href="/pokemon/favicon.ico">
+        <link rel="stylesheet" type="text/css" href="pokemon.css">
+    </head>
+    
+    <body>
+        <div class="row pad-large"></div>
+	<div class="container">
+	
+            <div class="row">
+                <input class="col-md-2" type="text" id="userInput">
+                <button id="submitButton" class="col-md-2 btn btn-success">Click Me!</button>
+                <button id="submitButton2" class="col-md-2 btn btn-success">Show Image</button>
+            </div>
+            
+            <div class="row">
+                <h1 id="pokemonName"></h1>
+            </div>
+            
+            <div class="row">
+                <img class="selectable" src="" id="pokemonSprite"/>
+                <img id="pokemonSprite2" class="selectable" src="sprites/pokemon/25.png">
+                <img class="flipped selectable" src="sprites/pokemon/25.png">
+            </div>
+	
+        </div>
+
+
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+        <!-- bootstrap.js -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <!-- Custom JS -->
+        <script type="text/javascript" src="scripts/app.js"></script>
+    </body>
+    
+</html>
