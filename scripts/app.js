@@ -8,8 +8,8 @@
  * 
  */
 var POKE = {
-    mode: "Select"
-    
+    mode: "Select",
+    running: true
 };
 
 $(document).ready(function() {
@@ -30,6 +30,16 @@ $(document).ready(function() {
             window.setTimeout(flip,400);  
         };
         
+        var jump = function(item, times) {
+            var timer = 0;
+            var jumpSwitch = function() {
+                item.toggleClass("jumping");
+            };
+            for (i=0; i<times*2; i++) {
+                timer+=100;
+                window.setTimeout(jumpSwitch,timer);
+            }
+        };
         
         var toggleDouble = function(item) {
             console.log(item);
@@ -45,10 +55,31 @@ $(document).ready(function() {
             item.toggleClass("flipped");
         };
         
+        var someAnimation = function(item) {
+            console.log("yes");
+            var delay = 0;
+            var i;
+            for (i=0; i<100; i++){
+              // add 2-5 second delay
+              delay += Math.random() * (5000 - 2000) + 2000;
+              type = Math.round(Math.random());
+              console.log(delay);
+                if (type == 0){
+                    window.setTimeout((function() {
+                        jump(item,2);
+                    }),delay);
+                } else window.setTimeout((function() {
+                        wiggle(item)}),delay);
+            }
+        };
+        
+        someAnimation($("#pikaSprite1"));
+        someAnimation($("#pikaSprite2"));
         
         //Event handlers
 	$("#submitButton").click(function() {
 		
+                $(this).html("Loading...");
 		var input = $("#userInput").val();
 		$.ajax({
 			method:"GET",
@@ -65,8 +96,10 @@ $(document).ready(function() {
 		});
 	});
         
-        $("body").click(function() {
-            $("#pokeContainer").removeClass("hidden");
+        $("#startButton").click(function() {
+            poke.mode = "play";
+            $("#setupContainer").addClass("hidden");
+            $("#battleContainer").removeClass("hidden");
         });
         
         $(".selectable").click(function() {
@@ -80,7 +113,8 @@ $(document).ready(function() {
                 
         
         $("#submitButton2").click(function() {
-            $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.poke1.id+".png");
+            jump($("#pikaSprite2"),3);
+//            $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.poke1.id+".png");
         });
         
 

@@ -8,7 +8,7 @@ and open the template in the editor.
     Author     : cmatheny
 */
 
-#pokeContainer {
+.pokeContainer {
     background: #335577;
     height: 80%;
     width: 60%;
@@ -19,10 +19,6 @@ and open the template in the editor.
     min-height: 200px;
 }
 
-.pad-large {
-    padding-top: 100px;
-}
-
 .flipped {
     -moz-transform: scale(-1, 1);
     -webkit-transform: scale(-1, 1);
@@ -31,6 +27,10 @@ and open the template in the editor.
     filter: FlipH;
 }
 
+.menuRow {
+    height: 40%;
+    width: 100%;
+}
 .pokeRow {
     height: 25%;
     width: 100%;
@@ -47,5 +47,12 @@ and open the template in the editor.
 }
 
 .selectable {
+    padding-top: 10%;
+    padding-bottom: 0;
     height: 60%;
+}
+
+.selectable.jumping {
+    padding-top: 0;
+    padding-bottom: 10%;
 }

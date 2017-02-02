@@ -7,73 +7,84 @@
     </head>
     
     <body>
-<!--       <div class="row pad-large"></div>
- 	<div class="container">
+        <div id="setupContainer" class="container pokeContainer">
 	
             <div class="row">
                 <input class="col-xs-2" type="text" id="userInput">
                 <button id="submitButton" class="col-xs-2 btn btn-success">Click Me!</button>
                 <button id="submitButton2" class="col-xs-2 btn btn-success">Show Image</button>
+                <button id="startButton" class="col-xs-2 btn btn-success">Start</button>
             </div>
             
-            <div class="row">
+            <div class="row menuRow">
                 <h1 id="pokemonName"></h1>
             </div>
             
-            <div class="row">
-                <img class="selectable" src="" id="pokemonSprite"/>
-                <img id="pokemonSprite2" class="selectable" src="sprites/pokemon/25.png">
-                <img class="flipped selectable" src="sprites/pokemon/25.png">
-            </div>-->
-            
-            <div id="pokeContainer" class="container hidden">
-                <div class="inner">
-                    
-                <div class="row pokeRow">
-                    <div class="col-xs-1"></div>
-                    <div class="col-xs-3">
-                        <img class="flipped selectable" src="sprites/pokemon/31.png">
-                    </div>
-                    <div class="col-xs-4"></div>
-                    <div class="col-xs-3 text-right">
-                        <img class="selectable" src="sprites/pokemon/85.png">
-                    </div>
+            <div class="row menuRow">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3 text-left">
+                    <img id="pikaSprite1" class="selectable" src="sprites/pokemon/25.png">
                 </div>
-                    
-                <div class="row pokeRow">
-                    <div class="col-xs-1"></div>
-                    <div class="col-xs-3">
-                        <img class="flipped selectable" src="sprites/pokemon/30.png">
-                    </div>
-                    <div class="col-xs-4"></div>
-                    <div class="col-xs-3 text-right">
-                        <img class="selectable" src="sprites/pokemon/45.png">
-                    </div>
+                
+                <div class="col-xs-4 text-center">
+                    <img class="selectable hidden" src="" id="pokemonSprite"/>
                 </div>
-                    
-                <div class="row pokeRow">
-                    <div class="col-xs-1"></div>
-                    <div class="col-xs-3">
-                        <img class="flipped selectable" src="sprites/pokemon/65.png">
-                    </div>
-                    <div class="col-xs-4"></div>
-                    <div class="col-xs-3 text-right">
-                        <img class="selectable" src="sprites/pokemon/135.png">
-                    </div>
+                
+                <div class="col-xs-3 text-right">
+                    <img id="pikaSprite2" class="flipped selectable" src="sprites/pokemon/25.png">
                 </div>
-                    
-                <div class="row pokeRow">
-                      <div class="col-xs-1"></div>
-                    <div class="col-xs-3">
-                        <img class="flipped selectable" src="sprites/pokemon/1.png">
-                    </div>
-                    <div class="col-xs-4"></div>
-                    <div class="col-xs-3 text-right">
-                        <img class="selectable" src="sprites/pokemon/53.png">
-                    </div>
-                </div>
-                    
+                
             </div>
+            
+        </div>
+            
+            
+        <div id="battleContainer" class="container pokeContainer hidden">
+            
+            <div class="row pokeRow">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <img class="flipped selectable" src="sprites/pokemon/31.png">
+                </div>
+                <div class="col-xs-4"></div>
+                <div class="col-xs-3 text-right">
+                    <img class="selectable" src="sprites/pokemon/85.png">
+                </div>
+            </div>
+
+            <div class="row pokeRow">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <img class="flipped selectable" src="sprites/pokemon/30.png">
+                </div>
+                <div class="col-xs-4"></div>
+                <div class="col-xs-3 text-right">
+                    <img class="selectable" src="sprites/pokemon/45.png">
+                </div>
+            </div>
+
+            <div class="row pokeRow">
+                <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <img class="flipped selectable" src="sprites/pokemon/65.png">
+                </div>
+                <div class="col-xs-4"></div>
+                <div class="col-xs-3 text-right">
+                    <img class="selectable" src="sprites/pokemon/135.png">
+                </div>
+            </div>
+
+            <div class="row pokeRow">
+                  <div class="col-xs-1"></div>
+                <div class="col-xs-3">
+                    <img class="flipped selectable" src="sprites/pokemon/1.png">
+                </div>
+                <div class="col-xs-4"></div>
+                <div class="col-xs-3 text-right">
+                    <img class="selectable" src="sprites/pokemon/53.png">
+                </div>
+            </div>
+            
         </div>
 
 
