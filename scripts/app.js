@@ -8,13 +8,45 @@
  * 
  */
 var POKE = {
-
+    mode: "Select"
     
 };
 
 $(document).ready(function() {
 	// DOM is ready
 	var poke=window.POKE;
+
+
+        // Functions
+        var wiggle = function(item) {
+            
+            var flip = function() {
+                flipHoriz(item);
+            };
+            
+            window.setTimeout(flip,100);
+            window.setTimeout(flip,200);
+            window.setTimeout(flip,300);
+            window.setTimeout(flip,400);  
+        };
+        
+        
+        var toggleDouble = function(item) {
+            console.log(item);
+            if (item.hasClass("flipped")) {
+                item.toggleClass("doubleflipped");
+            } else 
+            item.toggleClass("double");
+        };
+        
+        
+        var flipHoriz = function(item) {
+            console.log(item);
+            item.toggleClass("flipped");
+        };
+        
+        
+        //Event handlers
 	$("#submitButton").click(function() {
 		
 		var input = $("#userInput").val();
@@ -30,28 +62,12 @@ $(document).ready(function() {
 				window.POKE.poke1=data;
 				$("#pokemonName").html(data.name);
 			}
-		})
+		});
 	});
         
-        
-        $("#submitButton2").click(function() {
-            $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.poke1.id+".png");
+        $("body").click(function() {
+            $("#pokeContainer").removeClass("hidden");
         });
-        
-        
-        var toggleDouble = function(item) {
-            console.log(item);
-            if (item.hasClass("flipped")) {
-                item.toggleClass("doubleflipped");
-            } else item.toggleClass("double");
-        };
-        
-        
-        var flipHoriz = function(item) {
-            console.log(item);
-            item.toggleClass("flipped");
-        };
-        
         
         $(".selectable").click(function() {
             var clicked=$(this);
@@ -61,23 +77,14 @@ $(document).ready(function() {
             toggleDouble(clicked);
             poke.selected=clicked;
         });
+                
         
+        $("#submitButton2").click(function() {
+            $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.poke1.id+".png");
+        });
         
-        var wiggle = function(item) {
-            
-            var flip = function() {
-                flipHoriz(item);
-            };
-            
-            window.setTimeout(flip,100);
-            window.setTimeout(flip,200);
-            window.setTimeout(flip,300);
-            window.setTimeout(flip,400);  
-        };
-        
-        
+
         $("#pokemonSprite").mouseover(function() {
-            
             
             item = $(this);
             wiggle(item);

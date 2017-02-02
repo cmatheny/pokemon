@@ -8,6 +8,17 @@ and open the template in the editor.
     Author     : cmatheny
 */
 
+#pokeContainer {
+    background: #335577;
+    height: 80%;
+    width: 60%;
+    align-self: center;
+    max-width: 1000px;
+    max-height: 600px;
+    min-width: 400px;
+    min-height: 200px;
+}
+
 .pad-large {
     padding-top: 100px;
 }
@@ -20,17 +31,21 @@ and open the template in the editor.
     filter: FlipH;
 }
 
-.double {
-    -moz-transform: scale(2, 2);
-    -webkit-transform: scale(2, 2);
-    -o-transform: scale(2, 2);
-    transform: scale(2 2);
+.pokeRow {
+    height: 25%;
+    width: 100%;
 }
 
-.doubleflipped{
-    -moz-transform: scale(-2, 2);
-    -webkit-transform: scale(-2, 2);
-    -o-transform: scale(-2, 2);
-    transform: scale(-2, 2);
-    filter: FlipH;
+.selectable.double {
+    height: 90%;
+    padding-top: 0;
+}
+
+.selectable.doubleflipped{
+    height: 90%;
+    padding-top: 0;
+}
+
+.selectable {
+    height: 60%;
 }
