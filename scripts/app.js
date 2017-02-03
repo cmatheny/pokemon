@@ -18,23 +18,29 @@ $(document).ready(function() {
 
 
         // Functions
-        var wiggle = function(item) {
-            
+        var wiggle = function(item,times) {
+            var i;
+            var timer = 0;
+            console.log(times);
             var flip = function() {
                 flipHoriz(item);
             };
             
-            window.setTimeout(flip,100);
-            window.setTimeout(flip,200);
-            window.setTimeout(flip,300);
-            window.setTimeout(flip,400);  
+            for (i=0; i<times*2; i++) {
+                timer+=100;
+                window.setTimeout(flip,timer);
+            }
         };
         
         var jump = function(item, times) {
             var timer = 0;
+            var i;
+            
             var jumpSwitch = function() {
                 item.toggleClass("jumping");
             };
+            
+            console.log(times);
             for (i=0; i<times*2; i++) {
                 timer+=100;
                 window.setTimeout(jumpSwitch,timer);
@@ -42,7 +48,6 @@ $(document).ready(function() {
         };
         
         var toggleDouble = function(item) {
-            console.log(item);
             if (item.hasClass("flipped")) {
                 item.toggleClass("doubleflipped");
             } else 
@@ -51,25 +56,29 @@ $(document).ready(function() {
         
         
         var flipHoriz = function(item) {
-            console.log(item);
             item.toggleClass("flipped");
         };
         
         var someAnimation = function(item) {
-            console.log("yes");
-            var delay = 0;
+            var delay = 500;
             var i;
+            var times;
+            
             for (i=0; i<100; i++){
-              // add 2-5 second delay
-              delay += Math.random() * (5000 - 2000) + 2000;
-              type = Math.round(Math.random());
-              console.log(delay);
-                if (type == 0){
+                // 0:jump, 1:wiggle
+                type = Math.round(Math.random());
+                // do it 2-4 times
+                times = Math.round(Math.random()*2+2);
+                if (type === 0){
+                    console.log(times+" times.");
                     window.setTimeout((function() {
-                        jump(item,2);
+                        jump(item,times);
                     }),delay);
                 } else window.setTimeout((function() {
-                        wiggle(item)}),delay);
+                        wiggle(item,times);
+                    }),delay);
+                // add 2-5 second delay
+                delay += Math.random()*3000 + 2000;
             }
         };
         
@@ -91,6 +100,9 @@ $(document).ready(function() {
 				button.html("Done");
                                 console.log(data);
 				window.POKE.poke1=data;
+                                $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.poke1.id+".png");
+                                $("#pokemonSprite").removeClass("hidden");
+                                $("#startButton").removeClass("hidden");
 				$("#pokemonName").html(data.name);
 			}
 		});
@@ -110,18 +122,12 @@ $(document).ready(function() {
             toggleDouble(clicked);
             poke.selected=clicked;
         });
-                
-        
-        $("#submitButton2").click(function() {
-            jump($("#pikaSprite2"),3);
-//            $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.poke1.id+".png");
-        });
         
 
         $("#pokemonSprite").mouseover(function() {
             
             item = $(this);
-            wiggle(item);
+            wiggle(item,2);
         });
 
 });

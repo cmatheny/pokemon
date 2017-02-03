@@ -8,15 +8,54 @@ and open the template in the editor.
     Author     : cmatheny
 */
 
-.pokeContainer {
-    background: #335577;
-    height: 80%;
-    width: 60%;
-    align-self: center;
-    max-width: 1000px;
-    max-height: 600px;
+#outerContainer {
+    background: #111111;
+    height: 100%;
+    width: 100%;
+    max-width: 1600px;
+    max-height: 900px;
     min-width: 400px;
     min-height: 200px;
+    
+}
+
+#mainRow{
+    margin: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+.topContainer {
+    background: yellow;
+    height: 8%;
+    width: 100%;
+    margin: 0;
+    margin-top: 1%;
+}
+
+.sidebarContainer {
+    background: red;
+    height: 70%;
+    width: 16%;
+    padding: 1%;
+    margin: 0;
+}
+
+.bottomContainer {
+    background: purple;
+    height: 19%;
+    width: 100%;
+    padding: 1%;
+    margin: 0;
+}
+.pokeContainer {
+    background: #335577;
+    height: 70%;
+    width: 68%;
+    padding:1%;
+    align-self: center;
 }
 
 .flipped {
@@ -25,6 +64,11 @@ and open the template in the editor.
     -o-transform: scale(-1, 1);
     transform: scale(-1, 1);
     filter: FlipH;
+}
+
+.smallMenuRow {
+    height:10%;
+    width: 100%;
 }
 
 .menuRow {
@@ -36,23 +80,32 @@ and open the template in the editor.
     width: 100%;
 }
 
-.selectable.double {
+.sprite.double {
     height: 90%;
     padding-top: 0;
 }
 
-.selectable.doubleflipped{
-    height: 90%;
-    padding-top: 0;
-}
-
-.selectable {
+.sprite {
     padding-top: 10%;
     padding-bottom: 0;
     height: 60%;
 }
 
-.selectable.jumping {
+.sprite.jumping {
     padding-top: 0;
     padding-bottom: 10%;
+}
+
+#title {
+    font-size: 20pt;
+    font-size: 5vmin;
+}
+
+.messageLog {
+    
+}
+
+.itemSprite {
+    padding: 0;
+    height: 80%;
 }
