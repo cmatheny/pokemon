@@ -14,8 +14,8 @@ and open the template in the editor.
     width: 100%;
     max-width: 1600px;
     max-height: 900px;
-    min-width: 400px;
-    min-height: 200px;
+    min-width: 1000px;
+    min-height: 500px;
     
 }
 
@@ -108,4 +108,8 @@ and open the template in the editor.
 .itemSprite {
     padding: 0;
     height: 80%;
+}
+
+.btn {
+    font-size: 2vmin;
 }

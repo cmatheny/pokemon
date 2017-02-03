@@ -9,7 +9,8 @@
  */
 var POKE = {
     mode: "Select",
-    running: true
+    running: true,
+    animations: []
 };
 
 $(document).ready(function() {
@@ -27,7 +28,7 @@ $(document).ready(function() {
             };
             
             for (i=0; i<times*2; i++) {
-                timer+=100;
+                timer+=70;
                 window.setTimeout(flip,timer);
             }
         };
@@ -42,7 +43,7 @@ $(document).ready(function() {
             
             console.log(times);
             for (i=0; i<times*2; i++) {
-                timer+=100;
+                timer+=120;
                 window.setTimeout(jumpSwitch,timer);
             }
         };
@@ -59,31 +60,44 @@ $(document).ready(function() {
             item.toggleClass("flipped");
         };
         
+        
         var someAnimation = function(item) {
-            var delay = 500;
-            var i;
+            var delay;
             var times;
+
+            // 0-3:jump, 4-7:wiggle, 8:wigglejump!
+            type = Math.round(Math.random()*8);
             
-            for (i=0; i<100; i++){
-                // 0:jump, 1:wiggle
-                type = Math.round(Math.random());
+            // 0-2 seconds to delay (2-4 total)
+            delay = Math.random()*2000;
+            
+            if (type < 4 || type === 8){
                 // do it 2-4 times
                 times = Math.round(Math.random()*2+2);
-                if (type === 0){
-                    console.log(times+" times.");
-                    window.setTimeout((function() {
-                        jump(item,times);
-                    }),delay);
-                } else window.setTimeout((function() {
-                        wiggle(item,times);
-                    }),delay);
-                // add 2-5 second delay
-                delay += Math.random()*3000 + 2000;
-            }
+                
+                window.setTimeout((function() {
+                    jump(item,times);
+                }),delay);
+            };
+            
+            if(type >=4) {
+                // do it 2-4 times
+                times = Math.round(Math.random()*2+2);
+                
+                window.setTimeout((function() {
+                    wiggle(item,times);
+                }),delay);
+            };
+            
         };
         
-        someAnimation($("#pikaSprite1"));
-        someAnimation($("#pikaSprite2"));
+        poke.animations[0] = setInterval(function() {
+            someAnimation($("#pikaSprite1"))
+        },2000);
+        
+        poke.animations[1] = setInterval(function() {
+            someAnimation($("#pikaSprite2"))
+        },2000);
         
         //Event handlers
 	$("#submitButton").click(function() {
@@ -112,6 +126,11 @@ $(document).ready(function() {
             poke.mode = "play";
             $("#setupContainer").addClass("hidden");
             $("#battleContainer").removeClass("hidden");
+        });
+
+        $("#stopButton").click(function() {
+            clearInterval(poke.animations[0]);
+            clearInterval(poke.animations[1]);
         });
         
         $(".selectable").click(function() {
