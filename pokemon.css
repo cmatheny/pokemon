@@ -11,6 +11,7 @@ and open the template in the editor.
 #outerContainer {
     background: #111111;
     width: 100%;
+    height: 100%;
     max-width: 1600px;
     max-height: 900px;
     min-width: 1000px;
@@ -27,33 +28,34 @@ and open the template in the editor.
 }
 
 .topContainer {
-    background: yellow;
-    height: 8%;
-    width: 100%;
-    margin: 0;
+    background: #337722;
+    height: 7%;
+    width: 99%;
+    margin: .25%;
     margin-top: 1%;
 }
 
 .sidebarContainer {
-    background: red;
-    height: 70%;
+    background: #aa2200;
+    height: 69%;
     width: 16%;
     padding: 1%;
-    margin: 0;
+    margin: .25%;
 }
 
 .bottomContainer {
-    background: purple;
-    height: 19%;
-    width: 100%;
+    background: #444444;
+    height: 18%;
+    width: 99%;
     padding: 1%;
-    margin: 0;
+    margin: .25%;
 }
 .pokeContainer {
     background: #335577;
-    height: 70%;
-    width: 68%;
+    height: 69%;
+    width: 66%;
     padding:1%;
+    margin: .25%;
     align-self: center;
 }
 
@@ -66,12 +68,12 @@ and open the template in the editor.
 }
 
 .smallMenuRow {
-    height:15%;
+    height:25%;
     width: 100%;
 }
 
 .menuRow {
-    height: 50%;
+    height: 60%;
     width: 100%;
 }
 
@@ -97,14 +99,37 @@ row {
     z-index: 10;
 }
 
+#statWindow {
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    color: white;
+    font-size: 4vmin;
+    text-align: center;
+    background-color: black;
+    outline: 12px white solid;
+    z-index: 8;    
+}
+
+/*#statWindow div {
+    height: 100%;
+    align-content: center;
+}
+
+#statWindowSprite {
+
+}*/
+
 .tinyBrowseRow {
-    background-color:brown;
-    height: 2%;
+    background-color:black;
+    height: 4%;
     width: 100%;
 }
 
 .browseRow {
-    background-color:brown;
+    background-color:black;
     height: 22%;
     width: 100%;
 }

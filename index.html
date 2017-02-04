@@ -126,17 +126,14 @@
                     </div>
 
                     <div class="row menuRow">
-                        <div class="col-xs-1"></div>
-                        <div class="col-xs-3 text-left">
-                            <img id="pikaSprite1" class="flipped sprite" src="sprites/pokemon/25.png">
-                        </div>
+                        <div class="col-xs-3"></div>
+                        <div class="col-xs-6 text-center">
+                            <img id="pikaSprite1" class="flipped sprite" title="PIKAAAA!!" src="sprites/pokemon/25.png">
 
-                        <div class="col-xs-4 text-center">
-                            <img class="double sprite hidden" src="" id="pokemonSprite">
-                        </div>
 
-                        <div class="col-xs-3 text-right">
-                            <img id="pikaSprite2" class="sprite" src="sprites/pokemon/25.png">
+
+
+                            <img id="pikaSprite2" alt="test" title="PIKAAAA!!" class="sprite" src="sprites/pokemon/25.png">
                         </div>
                         <div class="col-xs-1"></div>
                     </div>    
@@ -169,7 +166,15 @@
 
                 </div>
                 
-                <div id="browseContainer" class="col-xs-6 pokeContainer hidden"></div>
+                <div id="browseContainer" class="col-xs-6 pokeContainer hidden">
+                    <div id="statWindow" class="hidden">
+                        <div class="col-xs-6"></div>
+                        <div class="col-xs-6">
+                            <img src="" id="statWindowSprite" class="sprite">
+                        </div>
+                        
+                    </div>
+                </div>
 
                 <div id="battleContainer" class="col-xs-1 container pokeContainer hidden">
 
@@ -223,7 +228,7 @@
             </div>
             
             <div id="bottomBar" class="row bottomContainer">
-                <div class="row smallMenuRow text-center">
+                <div class="row MenuRow text-center">
                     <div class="col-xs-4"></div>
                     <div class="col-xs-4">
                     <button id="stopButton" class="btn btn-danger">Stop the dancing!</button>
