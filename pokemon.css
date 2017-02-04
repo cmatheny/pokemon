@@ -72,28 +72,72 @@ and open the template in the editor.
 }
 
 .menuRow {
-    height: 40%;
+    height: 30%;
     width: 100%;
 }
+
+.browseRow {
+    background-color:brown;
+    height: 22%;
+    width: 100%;
+}
+.browseImg {
+    background-color: red;
+    height: 75%;
+}
+.browseRow.buttonRow {
+    height:12%;
+}
+
+.browseImg > img {
+    height: 95%;
+}
+
+.browseText {
+    color: white;
+    font-size: 2vmin;
+    text-transform: capitalize;
+}
+
+.btn.browseBtn {
+    margin-left: 1%;
+    margin-right: 1%;
+    width: 20%;
+}
+
+.btn.browseBtnSm {
+    margin-left: 1%;
+    margin-right: 1%;
+    width: 5%;
+}
+
 .pokeRow {
     height: 25%;
     width: 100%;
 }
 
 .sprite.double {
-    height: 90%;
-    padding-top: 0;
+    height: 80%;
+    padding-top: 10%;
+    padding-bottom: 0;
 }
 
 .sprite {
     padding-top: 10%;
     padding-bottom: 0;
+    padding-right: 0;
+    padding-left: 10%;
     height: 60%;
 }
 
 .sprite.jumping {
     padding-top: 0;
     padding-bottom: 10%;
+}
+
+.sprite.attacking {
+    padding-right:10%;
+    padding-left:0;
 }
 
 #title {
@@ -111,5 +155,21 @@ and open the template in the editor.
 }
 
 .btn {
+    font-size: 2vmin;
+    length: 80%;
+    width: 80%;
+}
+
+.sideBarText {
+    font-size: 2vmin;
+    color: white;
+    padding: 0;
+    text-transform: capitalize;
+}
+
+.textBox {
+    align-content: center;
+    length: 80%;
+    width: 80%;
     font-size: 2vmin;
 }

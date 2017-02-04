@@ -20,7 +20,85 @@
             </div>
             
             <div id="mainRow" class="row">
-                <div id="leftContainer" class="container col-xs-3 sidebarContainer">Left Sidebar</div>
+                <div id="leftContainer" class="container col-xs-3 sidebarContainer">
+                    
+                    <div id="leftSidebar0" class="row pokeRow">
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">HP:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div id="leftSidebar1" class="row pokeRow">
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">HP:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div id="leftSidebar2" class="row pokeRow">
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">HP:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+                        
+                    </div>
+                    
+                    <div id="leftSidebar3" class="row pokeRow">
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-5 text-left sideBarText">HP:</div>
+                            <div class="col-xs-7 text-right sideBarText"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
 
                 <div id="setupContainer" class="col-xs-6 pokeContainer">
 
@@ -28,12 +106,23 @@
 
                     <div class="row smallMenuRow text-center">
                         <div class="col-xs-4"></div>
-                        <input class="col-xs-4" type="text" id="userInput">
+                        <div class="col-xs-4">
+                            <input type="text" id="userInput" class="textBox text-center hidden">
+                        </div>
                     </div>
 
                     <div class="row smallMenuRow text-center">
                         <div class="col-xs-4"></div>
-                        <button class="col-xs-4 btn btn-success" id="submitButton">Search!</button>
+                        <div class="col-xs-4">
+                            <button class="btn btn-success hidden" id="submitButton">Search</button>
+                        </div>
+                    </div>
+                    
+                    <div class="row smallMenuRow text-center">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-4">
+                            <button class="btn btn-success" id="browseButton">Loading...</button>
+                        </div>
                     </div>
 
                     <div class="row menuRow">
@@ -53,66 +142,78 @@
                     </div>    
 
                     <div class="row smallMenuRow text-center">
-                        <h1 id="pokemonName"></h1>
-                    </div>
-
-                    <div class="row smallMenuRow text-center">
                         <div class="col-xs-4"></div>
-                        <button id="startButton" class="col-xs-4 btn btn-success hidden">Start</button>
+                        <div class="col-xs-4">
+                            <div id="pokemonName" class="text-center hidden"></div>
+                        </div>
                     </div>
                     
                     <div class="row smallMenuRow text-center">
                         <div class="col-xs-4"></div>
-                        <button id="stopButton" class="col-xs-4 btn btn-danger">Stop the dancing!</button>
+                        <div class="col-xs-4">
+                            <input type="text" id="pokemonRename" class="textBox text-center hidden">
+                        </div>
                     </div>
+
+                    <div class="row smallMenuRow text-center">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-4">
+                            <button id="addButton" class="btn btn-success hidden">Add to Party</button>
+                            <button id="startButton" class="ctn btn-success hidden">Start</button>
+                        </div>
+                    </div>
+                    
+
 
 
 
                 </div>
+                
+                <div id="browseContainer" class="col-xs-6 pokeContainer hidden"></div>
 
                 <div id="battleContainer" class="col-xs-1 container pokeContainer hidden">
 
                 <div class="row pokeRow">
                     <div class="col-xs-1"></div>
                     <div class="col-xs-3">
-                        <img class="flipped selectable sprite" src="sprites/pokemon/31.png">
+                        <img class="partySprites friendly flipped selectable sprite" src="">
                     </div>
                     <div class="col-xs-4"></div>
                     <div class="col-xs-3 text-right">
-                        <img class="selectable sprite" src="sprites/pokemon/85.png">
+                        <img class="partySprites enemy selectable sprite" src="sprites/pokemon/85.png">
                     </div>
                 </div>
 
                 <div class="row pokeRow">
                     <div class="col-xs-1"></div>
                     <div class="col-xs-3">
-                        <img class="flipped selectable sprite" src="sprites/pokemon/30.png">
+                        <img class="partySprites friendly flipped selectable sprite" src="">
                     </div>
                     <div class="col-xs-4"></div>
                     <div class="col-xs-3 text-right">
-                        <img class="selectable sprite" src="sprites/pokemon/45.png">
+                        <img class="partySprites enemy selectable sprite" src="sprites/pokemon/45.png">
                     </div>
                 </div>
 
                 <div class="row pokeRow">
                     <div class="col-xs-1"></div>
                     <div class="col-xs-3">
-                        <img class="flipped selectable sprite" src="sprites/pokemon/65.png">
+                        <img class="partySprites friendly flipped selectable sprite" src="">
                     </div>
                     <div class="col-xs-4"></div>
                     <div class="col-xs-3 text-right">
-                        <img class="selectable sprite" src="sprites/pokemon/135.png">
+                        <img class="partySprites enemy selectable sprite" src="sprites/pokemon/135.png">
                     </div>
                 </div>
 
                 <div class="row pokeRow">
                       <div class="col-xs-1"></div>
                     <div class="col-xs-3">
-                        <img class="flipped selectable sprite" src="sprites/pokemon/1.png">
+                        <img class="partySprites friendly flipped selectable sprite" src="">
                     </div>
                     <div class="col-xs-4"></div>
                     <div class="col-xs-3 text-right">
-                        <img class="selectable sprite" src="sprites/pokemon/53.png">
+                        <img class="partySprites enemy selectable sprite" src="sprites/pokemon/53.png">
                     </div>
                 </div>
 
@@ -121,7 +222,14 @@
                 <div id="rightContainer" class="col-xs-3 sidebarContainer">Right Sidebar</div>
             </div>
             
-            <div id="bottomBar" class="row bottomContainer">Bottom</div>
+            <div id="bottomBar" class="row bottomContainer">
+                <div class="row smallMenuRow text-center">
+                    <div class="col-xs-4"></div>
+                    <div class="col-xs-4">
+                    <button id="stopButton" class="btn btn-danger">Stop the dancing!</button>
+                    </div>
+                </div>
+            </div>
         </div>
             
             
