@@ -10,12 +10,11 @@ and open the template in the editor.
 
 #outerContainer {
     background: #111111;
-    height: 100%;
     width: 100%;
     max-width: 1600px;
     max-height: 900px;
     min-width: 1000px;
-    min-height: 500px;
+    min-height: 300px;
     
 }
 
@@ -67,12 +66,40 @@ and open the template in the editor.
 }
 
 .smallMenuRow {
-    height:10%;
+    height:15%;
     width: 100%;
 }
 
 .menuRow {
-    height: 30%;
+    height: 50%;
+    width: 100%;
+}
+
+div {
+    overflow: hidden;
+}
+
+row {
+    overflow: hidden;
+}
+
+#loadingSign {
+    position: absolute;
+    bottom: 40%;
+    left: 40%;
+    width: 20%;
+    height: 20%;
+    color: white;
+    font-size: 4vmin;
+    text-align: center;
+    background-color: black;
+    outline: 12px white solid;
+    z-index: 10;
+}
+
+.tinyBrowseRow {
+    background-color:brown;
+    height: 2%;
     width: 100%;
 }
 
@@ -83,10 +110,10 @@ and open the template in the editor.
 }
 .browseImg {
     background-color: red;
-    height: 75%;
+    height: 60%;
 }
 .browseRow.buttonRow {
-    height:12%;
+    height:8%;
 }
 
 .browseImg > img {
@@ -95,20 +122,28 @@ and open the template in the editor.
 
 .browseText {
     color: white;
-    font-size: 2vmin;
+    max-height: 100%;
+    max-width: 100%;
+    font-size: 1.8vmin;
     text-transform: capitalize;
 }
 
 .btn.browseBtn {
     margin-left: 1%;
     margin-right: 1%;
-    width: 20%;
+    width: 12%;
+}
+
+.btn.browseBtnMd {
+    margin-left: .5%;
+    margin-right: .5%;
+    width: 6.5%;
 }
 
 .btn.browseBtnSm {
-    margin-left: 1%;
-    margin-right: 1%;
-    width: 5%;
+    margin-left: .5%;
+    margin-right: .5%;
+    width: 4%;
 }
 
 .pokeRow {

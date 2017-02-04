@@ -8,14 +8,17 @@
  * 
  */
 var POKE = {
-    browseIndex:0,
     pokeApiUrl:"https://pokeapi.co/api/v2/",
-    browseContext: null,
+    browseContext: [],
     mode: "Select",
     running: true,
     animations: [],
     party1: [],
-    party2: []
+    party2: [],
+    browsePage: 0,
+    loadPage: 0,
+    maxPage: 37, //37
+    numBrowseButtons: 7 // Should be odd and probably 7 or less
 };
 
 $(document).ready(function() {
@@ -122,26 +125,135 @@ $(document).ready(function() {
             
         };
 
-        var pokeRequest = function(index) {
-            console.log("loading page");
-            if (index !== undefined) {
-                poke.browseIndex=index;
+        var pokeRequest = function(page) {
+
+            if (page !== undefined) {
+                poke.loadPage=page;
                 }
-                
+            
+            if (poke.browseContext[poke.loadPage]) {
+                console.log("Already loaded.");
+                return;
+            }
+            
+            console.log("loading page");        
             $.ajax({
                 method: "GET",
-                url: poke.pokeApiUrl+"pokemon/?limit=20&offset="+poke.browseIndex,
+                url: poke.pokeApiUrl+"pokemon/?limit=20&offset="+poke.loadPage*20,
                 success: function(data) {
-                    if (poke.browseIndex===0) {
+                    if (poke.loadPage===0) {
                         $("#browseButton").addClass("active");
                         $("#browseButton").html("Browse Pokemon");
                     }
-                    poke.browseIndex+=20;
-                    poke.browseContext=data;
+                    poke.browseContext[poke.loadPage]=data;
+                    console.log(poke.browseContext);
+                    poke.loadPage++;
                     console.log(data);
+                    if (poke.loadPage < poke.maxPage+1) {
+                        window.setTimeout(pokeRequest,100);
+                    }
                 }
             });
         };
+        
+        // Toggle button between green and gray (must be one of those to begin with)
+        var buttonDisable = function(buttonObject) {
+            buttonObject.addClass("btn-secondary");
+            buttonObject.removeClass("btn-success")
+        };
+        
+        var buttonEnable = function(buttonObject) {
+            buttonObject.removeClass("btn-secondary");
+            buttonObject.addClass("btn-success")
+        };
+        
+        var waitForPage = function() {
+            if (!poke.browseContext[poke.browsePage]) {
+                $("#loadingSign").removeClass("hidden");
+                window.setTimeout(waitForPage,500);
+            } else {
+                $("#loadingSign").addClass("hidden");
+                fillBrowseContainer(poke.browsePage);
+            }
+        };
+        
+        var setBrowseButtons = function() {
+            var currPage = poke.browsePage;
+            var lowPage = Math.max(0,poke.browsePage-3);
+            var highPage = Math.min(poke.maxPage+1,poke.browsePage+3);
+            if (highPage === poke.maxPage+1) {
+                lowPage = poke.maxPage - 6;
+            }
+            var pageIndex = lowPage;
+            var index;
+            var buttonObject;
+            for (index=0; index<poke.numBrowseButtons; index++) {
+                buttonObject=$(poke.buttonArray[index]);
+                if (pageIndex === currPage) {
+                    buttonObject.addClass("btn-primary");
+                    buttonObject.removeClass("btn-success");
+                } else {
+                    buttonObject.addClass("btn-success");
+                    buttonObject.removeClass("btn-primary");
+                }
+
+                $(poke.buttonArray[index]).html(pageIndex+1);
+                pageIndex++;
+            }
+        };
+        
+        var fillBrowseContainer = function(pageNum) {
+            var row;
+            var col;
+            var thisImage;
+            var thisText;
+            var index;
+            var pokeName;
+            var pokeId;
+            var pokeUrlArray;
+            poke.browsePage=pageNum;
+            console.log("page: "+(poke.browsePage+1));            
+            console.log(poke.browseContext);
+            
+            for (row=0;row<4;row++) {
+                for (col=0;col<5;col++) {
+                    index=col+5*row;
+                    pokeUrlArray=poke.browseContext[poke.browsePage].results[index].url.split("/");
+                    pokeId=pokeUrlArray[6];
+                    pokeName=poke.browseContext[poke.browsePage].results[index].name;
+                    thisImage=$("div.browse img")[index];
+                    thisText=$("div.browse .browseText")[index];
+                    $(thisImage).attr("src","sprites/pokemon/"+pokeId+".png");
+                    $(thisText).html(pokeName);
+                }
+            }
+            
+            setBrowseButtons();
+            if (poke.browsePage === 0) {
+                buttonDisable($("#browsePrev"));
+                buttonDisable($("#browseLeft10"));
+                buttonDisable($("#browseFirst"));
+            } else {
+                buttonEnable($("#browsePrev"));
+                buttonEnable($("#browseLeft10"));
+                buttonEnable($("#browseFirst"));
+            }
+            if (poke.browsePage === poke.maxPage) {
+                buttonDisable($("#browseNext"));
+                buttonDisable($("#browseRight10"));
+                buttonDisable($("#browseLast"));
+            } else {
+                buttonEnable($("#browseNext"));
+                buttonEnable($("#browseRight10"));
+                buttonEnable($("#browseLast"));
+            }
+            
+            console.log($("#browseContainer"));
+            
+        };
+        
+        
+
         
         // On page load
         // generate browsing table tags
@@ -153,31 +265,39 @@ $(document).ready(function() {
             var buttonRow;
             var nextButton;
             
+            // Generate pokemon browsing table
+            $("#browseContainer").append("<div class=\"row tinyBrowseRow\"></div>");
             for (row=0;row<4;row++) {
                 $("#browseContainer").append("<div class=\"row browseRow\"></div>");
-                thisRow=$($("#browseContainer").children(".row")[row]);
+                thisRow=$($("#browseContainer").children(".browseRow")[row]);
                 thisRow.append("<div class=\"col-xs-1\">Border</div>");
                     for (col=0;col<5;col++) {
                         thisRow.append("<div class=\"col-xs-2 browse text-center\"></div>");
                         cell = $("div.browse").last();
-                        $(cell).append("<div class=\"row browseImg\"><img src=\"\"></div><div class=\"row browseText\">empty</div>");
+                        $(cell).append("<div class=\"row btn browseImg\"><img src=\"\"></div><div class=\"row browseText\">empty</div>");
                     }
                 thisRow.append("<div class=\"col-xs-1\">Border</div>");
             }
             $("#browseContainer").append("<div class=\"row browseRow buttonRow\"></div>");
             
+            // Generate browse buttons
             buttonRow=$("#browseContainer .buttonRow")[0];
             console.log(buttonRow)
-            $(buttonRow).append("<div class=\"col-xs-1\"></div>");
-            $(buttonRow).append("<div class=\"col-xs-10 text-center\">"+
-                    "<button id=\"browsePrev\" class=\"btn btn-success browseBtn\">< Previous</button>"+
+            $(buttonRow).append("<div class=\"col-xs-12 text-center\">"+
+                    "<button id=\"browseFirst\" class=\"btn btn-secondary browseBtnMd\"><<</button>"+
+                    "<button id=\"browseLeft10\" class=\"btn btn-secondary browseBtnMd\">< 10</button>"+
+                    "<button id=\"browsePrev\" class=\"btn btn-secondary browseBtn\">< Prev</button>"+
                     "<button id=\"browseNext\" class=\"btn btn-success browseBtn\">Next ></button>"+
-            "</div>");
+                    "<button id=\"browseRight10\" class=\"btn btn-success browseBtnMd\">10 ></button>"+
+                    "<button id=\"browseLast\" class=\"btn btn-success browseBtnMd\">>></button>"+
+                    "</div>");
             
             nextButton=$("#browseNext");
-            for (col=0;col<8;col++){
-                nextButton.before("<button class=\"btn btn-success browseBtnSm\">"+(col+1)+"</button>");
+            // inserts button before Next > button, to preserve ordering
+            for (col=0;col<poke.numBrowseButtons;col++){
+                nextButton.before("<button class=\"btn btn-success browseBtnNum browseBtnSm\">"+(col+2)+"</button>");
             }
+            poke.buttonArray = $("#browseContainer .browseBtnNum");
         })();
         
         console.log($("#browseContainer"));
@@ -186,13 +306,13 @@ $(document).ready(function() {
         var pika2=$("#pikaSprite2");
         comboAttack(pika1);
         comboAttack(pika2);
-        poke.animations[0] = setInterval(function() {
+        poke.animations.push(setInterval(function() {
             someAnimation(pika1);
-        },3000);
+        },3000));
         
-        poke.animations[1] = setInterval(function() {
+        poke.animations.push(setInterval(function() {
             someAnimation(pika2);
-        },3000);
+        },3000));
         
         
         pokeRequest();
@@ -207,39 +327,15 @@ $(document).ready(function() {
         
         //Event handlers
         $("#browseButton").click(function() {
-            var row;
-            var col;
-            var thisImage;
-            var thisText;
-            var index;
-            var pokeName;
-            var pokeId;
-            var pokeUrlArray;
+
             
             if (!$("#browseButton").hasClass("active")) {
                 return;
-            }
-//            console.log($("#browseContainer"));
-
-            for (row=0;row<4;row++) {
-                for (col=0;col<5;col++) {
-                    index=col+5*row;
-                    pokeUrlArray=poke.browseContext.results[index].url.split("/");
-                    pokeName=pokeUrlArray[7];
-                    pokeId=pokeUrlArray[6];
-                    pokeName=poke.browseContext.results[index].name;
-                    thisImage=$("div.browse img")[index];
-                    thisText=$("div.browse .browseText")[index];
-                    $(thisImage).attr("src","sprites/pokemon/"+pokeId+".png");
-                    $(thisText).html(pokeName);
-                }
-            }
-            console.log($("#browseContainer"));
+            } else fillBrowseContainer(0);
+            
             $("#setupContainer").addClass("hidden");
             $("#stopButton").addClass("hidden");
             $("#browseContainer").removeClass("hidden");
-            pokeRequest();
-            
         });
         
 	$("#submitButton").click(function() {
@@ -264,21 +360,43 @@ $(document).ready(function() {
                                 $("#pokemonRename").removeClass("hidden")
 				$("#pokemonRename").attr("value","Enter Name");
                                 comboAttack($("#pokemonSprite"));
+                                
 			}
 		});
 	});
         
         $("#browseContainer .buttonRow").click(function() {
             var target=event.target;
-            var buttonArray = $(this).find(".btn");
-            console.log(target);
-            if (target === buttonArray[0]) {
-                console.log("prev");
-            } else if (target === buttonArray[buttonArray.length-1]) {
-                console.log("next");
-            }
-            if ($(target).hasClass("btn")) {
-                
+            var buttonVal = $(target).html();
+
+            console.log(buttonVal);            
+            
+            if (buttonVal === "&lt;&lt;") {
+                poke.browsePage=0;
+                waitForPage();
+            } else if (buttonVal === "&lt; 10") {
+                poke.browsePage=Math.max(0,poke.browsePage-10);
+                waitForPage();
+            } else if (buttonVal === "&lt; Prev") {
+                if (poke.browsePage > 0) {
+                    poke.browsePage--;
+                    waitForPage();
+                }
+            } else if (buttonVal === "Next &gt;") {
+                if (poke.browsePage < poke.maxPage) {
+                    poke.browsePage++;
+                    waitForPage();
+                }
+            } else if (buttonVal === "10 &gt;") {
+                poke.browsePage=Math.min(poke.maxPage,poke.browsePage+10);
+                waitForPage();
+            } else if (buttonVal === "&gt;&gt;") {
+                poke.browsePage=poke.maxPage;
+                console.log(poke.maxPage);
+                waitForPage();
+            } else if ($.isNumeric(buttonVal)) {
+                poke.browsePage=buttonVal-1;
+                waitForPage();
             }
         });
 
@@ -320,8 +438,10 @@ $(document).ready(function() {
 
 
         $("#stopButton").click(function() {
-            clearInterval(poke.animations[0]);
-            clearInterval(poke.animations[1]);
+            while (poke.animations.length) {
+                clearInterval(poke.animations.pop());
+                clearInterval(poke.animations.pop());
+        }
             $(this).addClass("hidden");
         });
         
