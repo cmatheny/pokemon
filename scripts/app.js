@@ -3,6 +3,7 @@
  */
 var POKE = {
     pokeApiUrl:"https://pokeapi.co/api/v2/",
+    spriteUrl:"sprites/pokemon/",
     pokeIndexData: null,
     mode: "Select",
     running: true,
@@ -28,7 +29,7 @@ var POKE = {
 
 $(document).ready(function() {
 	// DOM is ready
-	var poke=window.POKE;
+	var poke=POKE;
 
         var Pokemon = function(pokeData, nickname, id, name, hp, maxHp, attack, defense,
             spAttack, spDefense, speed) {
@@ -516,10 +517,10 @@ $(document).ready(function() {
         comboAttack(pika2);
         poke.animations.push(setInterval(function() {
             someAnimation(pika1);
-        },3000));
+        },2000));
         poke.animations.push(setInterval(function() {
             someAnimation(pika2);
-        },3000));
+        },2000));
         
         loadCache();
         console.log(poke.Cache);
@@ -547,7 +548,10 @@ $(document).ready(function() {
         $("#browseContainer .browseImg").click(function() {
             var id;
             
+            
             var url = $($(this).children()[0]).attr("src");
+            if (url === (poke.spriteUrl + "none.png")) return;
+            
             var imgSprite = $("#statWindowSprite");
             id = url.split("/")[2].split(".")[0];
             pokeStatRequest(id);

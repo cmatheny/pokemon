@@ -7,13 +7,14 @@
     </head>
     
     <body>
+        <div id="hiddenContainer">
         <div id="outerContainer" class="container">
             <div id="loadingSign" class="popup hidden">
-                <div class="row">
+                <div class="row row30">
                     Loading...
                 </div>
-                <div class="row">
-                    <img src="sprites/animations/pikachu-bouncing-pokeball.gif">
+                <div class="row row70">
+                    <img class="" src="sprites/animations/pikachu-bouncing-pokeball.gif">
                 </div>
             </div>
             
@@ -133,26 +134,22 @@
                         </div>
                     </div>
 
+                    <div class="row smallMenuRow text-center"></div>
+                    
                     <div class="row menuRow">
                         <div class="col-xs-3"></div>
-                        <div class="col-xs-3 text-center">
-                            <img id="pikaSprite1" class="double flipped sprite" title="PIKAAAA!!" src="sprites/pokemon/25.png">
+                        <div class="col-xs-3 pikaDiv text-right">
+                            <img id="pikaSprite1" class="double flipped sprite" title="PIKAAAA!!" src="sprites/pika-cropped.png">
                         </div>
                         
-                        <div class="col-xs-3 text-center">
+                        <div class="col-xs-3 pikaDiv text-left">
 
-                            <img id="pikaSprite2" alt="test" title="PIKAAAA!!" class="double sprite" src="sprites/pokemon/25.png">
+                            <img id="pikaSprite2" alt="test" title="PIKAAAA!!" class="double sprite" src="sprites/pika-cropped.png">
                         </div>
 
                     </div>    
 
-                    <div class="row smallMenuRow text-center">
-                        <div class="col-xs-4"></div>
-                        <div class="col-xs-4">
-                            <button id="addButton" class="btn btn-success hidden">Add to Party</button>
-                            <button id="startButton" class="btn btn-success hidden">Start</button>
-                        </div>
-                    </div>
+                    
                     
                 </div>
                 
@@ -278,12 +275,12 @@
                 <div class="row MenuRow text-center">
                     <div class="col-xs-4"></div>
                     <div class="col-xs-4">
-                    <button id="stopButton" class="btn btn-danger">Stop the dancing!</button>
+                    <button id="stopButton" class="btn btn-danger hidden">Stop the dancing!</button>
                     </div>
                 </div>
             </div>
+        </div>test
         </div>
-            
             
 
 
