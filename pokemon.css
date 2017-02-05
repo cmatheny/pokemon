@@ -101,34 +101,6 @@ row {
     width: 100%;
 }
 
-#loadingSign {
-    position: absolute;
-    bottom: 40%;
-    left: 40%;
-    width: 20%;
-    height: 20%;
-    color: white;
-    font-size: 4vmin;
-    text-align: center;
-    background-color: black;
-    outline: 12px white solid;
-    z-index: 10;
-}
-
-#statWindow {
-    position: absolute;
-    bottom: 5%;
-    left: 5%;
-    width: 90%;
-    height: 90%;
-    color: white;
-    font-size: 4vmin;
-    text-align: center;
-    background-color: black;
-    outline: 12px white solid;
-    z-index: 8;    
-}
-
 #statWindow .row {
     height: 10%;
     margin: 2%;
@@ -265,7 +237,6 @@ row {
 
 .textBox {
     align-content: center;
-    length: 80%;
     width: 80%;
     font-size: 2vmin;
 }
@@ -273,4 +244,38 @@ row {
 #pikaSprite1,#pikaSprite2 {
     height: unset;
     width: 100%;
+}
+
+.popup {
+    position: absolute;
+    color: white;
+    font-size: 4vmin;
+    text-align: center;
+    background-color: black;
+    outline: 12px white solid;
+    z-index: 3;
+}
+
+.popup#statWindow {
+    bottom: 5%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    z-index: 6;    
+}
+
+.popup#loadingSign {
+    bottom: 40%;
+    left: 40%;
+    width: 20%;
+    height: 20%;
+    z-index: 10;
+}
+
+.popup#nicknameWindow {
+    bottom: 40%;
+    left: 40%;
+    width: 20%;
+    height: 20%;
+    z-index: 8;
 }

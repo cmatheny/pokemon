@@ -65,8 +65,6 @@ $(document).ready(function() {
                 this.id = pokeData.id;
                 this.origData=pokeData;                
             }
-            console.log("Pokemon object:");
-            console.log(this);
             return this;
         };
         
@@ -200,22 +198,21 @@ $(document).ready(function() {
         
         var pokeRequest = function() {
             
-            console.log(poke.Cache.pokeIndexData.results.length);
-            console.log(poke.Cache.pokeIndexData);
             var finish = function() {
                 $("#browseButton").addClass("active");
                 $("#browseButton").html("Browse Pokemon");
                 return;
             };
             
-            if (poke.Cache.pokeIndexData.results.length>0) {
+            if (poke.Cache.pokeIndexData.results && 
+                    poke.Cache.pokeIndexData.results.length>0) {
                 poke.pokeIndexData=poke.Cache.pokeIndexData;
-                console.log("Already loaded.");
+                console.log("Loaded from cache.");
                 finish();
                 return;
             }            
             
-            console.log("loading page");  
+            console.log("Loading from PokeAPI...");
             
             $.ajax({
                 method: "GET",
@@ -250,11 +247,12 @@ $(document).ready(function() {
             
             if (poke.Cache.pokeData[pokeId]) {
                 finish();
-                console.log("Already loaded.");
+                console.log("Loaded from cache.");
             } else {
             
                 loading(true);
-
+                console.log("Loading from PokeAPI...");
+                
                 $.ajax({
                     method: "GET",
                     url: poke.pokeData[pokeId].url,
@@ -262,7 +260,6 @@ $(document).ready(function() {
                     success: function(data) {
                         poke.Cache.pokeData[pokeId] = data;
                         localStorage['pokeCache'] = JSON.stringify(poke.Cache);
-                        console.log(data);
                         loading(false);
                         finish();
                     },
@@ -346,7 +343,6 @@ $(document).ready(function() {
             $("#statWindowSpDef").html(temp.stats[1].base_stat);
             $("#statWindowSpeed").html(temp.stats[0].base_stat);
             $("#statWindowHP").html(temp.stats[5].base_stat);
-            console.log(poke.statWindow.pokeData.name);
         };
         
         
@@ -420,15 +416,18 @@ $(document).ready(function() {
                 buttonEnable($("#browseLast"));
             }
             
-            console.log($("#browseContainer"));
+        };
+        
+        var getNickname = function() {
             
+            addToParty();
         };
         
         var addToParty = function() {
             var index = poke.party1.length;
             var fields = $("#leftSidebar"+index).find("div.text-right");
-            console.log(fields);
             var temp = new Pokemon (poke.statWindow.pokeData);
+            
             //$(fields[0]).html($("#pokemonRename").val());
             $(fields[0]).html(temp.name);
             $(fields[1]).html(temp.name);
@@ -546,7 +545,6 @@ $(document).ready(function() {
         
         
         $("#browseContainer .browseImg").click(function() {
-            console.log($(this).children()[0]);
             var id;
             
             var url = $($(this).children()[0]).attr("src");
@@ -556,35 +554,6 @@ $(document).ready(function() {
             
             imgSprite.attr("src",url);
         });
-        
-        
-	$("#submitButton").click(function() {
-		
-                $(this).html("Loading...");
-		var input = $("#userInput").val();
-		$.ajax({
-			method:"GET",
-			url:"https://pokeapi.co/api/v2/pokemon/" + input + "/",
-			success: function(data){
-				var button=$("#submitButton");
-				button.removeClass("btn-success");
-				button.addClass("btn-danger");
-				button.html("Done");
-                                console.log(data);
-				poke.tempPoke=data;
-                                $("#pokemonSprite").attr("src","sprites/pokemon/"+poke.tempPoke.id+".png");
-                                $("#pokemonSprite").removeClass("hidden");
-                                $("#addButton").removeClass("hidden");
-                                $("#pokemonName").removeClass("hidden");
-                                $("#pokemonName").html(data.name);
-                                $("#pokemonRename").removeClass("hidden");
-				$("#pokemonRename").attr("value","Enter Name");
-                                comboAttack($("#pokemonSprite"));
-                                
-			}
-		});
-	});
-        
         
         $("#browseContainer .buttonRow .btn").click(function() {
             var target=event.target;
@@ -615,7 +584,7 @@ $(document).ready(function() {
 
 
         $("#statWindowAddBtn").click(function() {
-            addToParty();
+            getNickname();
             $("#statWindow").addClass("hidden");
         });
 
