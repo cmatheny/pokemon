@@ -34,7 +34,6 @@ img {
 }
 
 #hiddenContainer {
-    background: blue;
     width: 100%;
     position: relative;
     padding-bottom: 56.25%;
@@ -120,8 +119,8 @@ img {
 }
 
 #statWindow .row {
-    height: 8.5%;
-    margin: 2%;
+    height: 12%;
+    margin: 0;
 }
 
 .row#statWindowSpriteRow {
@@ -130,6 +129,7 @@ img {
 
 .row#statWindowButtonRow {
     height: 10%;
+    margin-top: 7%;
 }
 
 .row.row30 {
@@ -280,7 +280,7 @@ img {
 }
 
 .popup#statWindow {
-    font-size: 2.9vw;
+    font-size: 2.5vw;
     bottom: 7%;
     left: 5%;
     width: 90%;
