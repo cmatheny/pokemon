@@ -8,13 +8,24 @@ and open the template in the editor.
     Author     : cmatheny
 */
 
+body {
+    font-family: courier new;
+    font-size: 2vmin;
+    color: white;
+}
+
+.btn.btn-secondary {
+    color: black;
+}
+
 #outerContainer {
     background: #111111;
     width: 100%;
     height: 100%;
+    padding: .5%;
     max-width: 1600px;
     max-height: 900px;
-    min-width: 1000px;
+    min-width: 600px;
     min-height: 300px;
     
 }
@@ -32,12 +43,11 @@ and open the template in the editor.
     height: 7%;
     width: 99%;
     margin: .25%;
-    margin-top: 1%;
 }
 
 .sidebarContainer {
     background: #aa2200;
-    height: 69%;
+    height: 70%;
     width: 16%;
     padding: 1%;
     margin: .25%;
@@ -45,14 +55,14 @@ and open the template in the editor.
 
 .bottomContainer {
     background: #444444;
-    height: 18%;
+    height: 20%;
     width: 99%;
     padding: 1%;
     margin: .25%;
 }
 .pokeContainer {
     background: #335577;
-    height: 69%;
+    height: 70%;
     width: 66%;
     padding:1%;
     margin: .25%;
@@ -68,7 +78,7 @@ and open the template in the editor.
 }
 
 .smallMenuRow {
-    height:25%;
+    height:20%;
     width: 100%;
 }
 
@@ -133,16 +143,22 @@ row {
     height: 22%;
     width: 100%;
 }
-.browseImg {
-    background-color: red;
+
+.browseRow .col-xs-2 {
+    padding: 0;
+}
+
+.btn.browseImg {
+    background-color: #aa2200;
     height: 60%;
+
 }
 .browseRow.buttonRow {
-    height:8%;
+    height:5%;
 }
 
 .browseImg > img {
-    height: 95%;
+    height: 100%;
 }
 
 .browseText {
@@ -151,6 +167,15 @@ row {
     max-width: 100%;
     font-size: 1.8vmin;
     text-transform: capitalize;
+}
+
+#browseContainer .btn {
+    padding: 0;
+    font-size: 1.5vmin;
+}
+
+.buttonRow .btn {
+    height: 100%;
 }
 
 .btn.browseBtn {
@@ -216,7 +241,6 @@ row {
 
 .btn {
     font-size: 2vmin;
-    length: 80%;
     width: 80%;
 }
 
