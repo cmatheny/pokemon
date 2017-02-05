@@ -1,33 +1,27 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * 
  */
 var POKE = {
     pokeApiUrl:"https://pokeapi.co/api/v2/",
-    browseContext: null,
+    pokeIndexData: null,
     mode: "Select",
     running: true,
     animations: [],
     party1: [],
     party2: [],
     browsePage: 0,
-    loadPage: 0,
     noServer: false,
     maxPage: 39, // 39
     maxPoke: 783, // 783
     numBrowseButtons: 7, // Should be odd and probably 7 or less
+    pokeData: [],
     
     statWindow: {
         pokeData: null
     },
     
     Cache: {
-        browseContext: [],
+        pokeIndexData: [],
         pokeData: []
     }
 };
@@ -36,7 +30,46 @@ $(document).ready(function() {
 	// DOM is ready
 	var poke=window.POKE;
 
-
+        var Pokemon = function(pokeData, nickname, id, name, hp, maxHp, attack, defense,
+            spAttack, spDefense, speed) {
+            if ((!(typeof window === "undefined") && this === window) || 
+                    (!(typeof global === "undefined") && this === global)) {
+                throw  Error("Constructor called as function");
+            }
+            
+            if (!pokeData) {
+                this.nickname=nickname;
+                this.name = name;
+                this.hp = hp;
+                this.maxHp = maxHp;
+                this.attack = attack;
+                this.defense = defense;
+                this.spAttack = spAttack;
+                this.spDefense = spDefense;
+                this.speed = speed;
+                this.id = id;
+                this.origData=null;
+            } else {
+                if (nickname) {
+                    this.nickname=nickname;
+                } else this.nickname=pokeData.name;
+                
+                this.name = pokeData.name;
+                this.hp = pokeData.stats[5].base_stat;
+                this.maxHp = pokeData.stats[5].base_stat;
+                this.attack = pokeData.stats[4].base_stat;
+                this.defense = pokeData.stats[3].base_stat;
+                this.spAttack = pokeData.stats[1].base_stat;
+                this.spDefense = pokeData.stats[2].base_stat;
+                this.speed = pokeData.stats[0].base_stat;
+                this.id = pokeData.id;
+                this.origData=pokeData;                
+            }
+            console.log("Pokemon object:");
+            console.log(this);
+            return this;
+        };
+        
         // Functions
         var wiggle = function(item,times) {
             var i;
@@ -83,23 +116,23 @@ $(document).ready(function() {
             }
         };
         
-        var toggleDouble = function(item) {
-            if (item.hasClass("flipped")) {
-                item.toggleClass("doubleflipped");
-            } else 
-            item.toggleClass("double");
-        };
-        
-        
         var flipHoriz = function(item) {
             item.toggleClass("flipped");
         };
         
         
         var comboAttack = function(item) {
+            if (!item.hasClass("block")) {
+                item.addClass("block");
+                comboAttack(item);
+                // block for 2 sec
+                window.setTimeout(function() {item.removeClass("block");},1500);
+
             wiggle(item,2);
             window.setTimeout(function(){jump(item,1);},400);
             window.setTimeout(function(){attack(item,2);},650);
+            }
+
         };
         
         
@@ -165,11 +198,20 @@ $(document).ready(function() {
         };
         
         
-        var pokeRequest = function(page) {
+        var pokeRequest = function() {
             
-            if (poke.Cache.browseContext.length>0) {
-                poke.browseContext=poke.Cache.browseContext;
+            console.log(poke.Cache.pokeIndexData.results.length);
+            console.log(poke.Cache.pokeIndexData);
+            var finish = function() {
+                $("#browseButton").addClass("active");
+                $("#browseButton").html("Browse Pokemon");
+                return;
+            };
+            
+            if (poke.Cache.pokeIndexData.results.length>0) {
+                poke.pokeIndexData=poke.Cache.pokeIndexData;
                 console.log("Already loaded.");
+                finish();
                 return;
             }            
             
@@ -178,57 +220,32 @@ $(document).ready(function() {
             $.ajax({
                 method: "GET",
                 url: poke.pokeApiUrl+"pokemon/?limit="+poke.maxPoke,
+                
                 success: function(data) {
-                    if (poke.loadPage===0) {
-                        $("#browseButton").addClass("active");
-                        $("#browseButton").html("Browse Pokemon");
-                    }
-                    poke.browseContext=data;
-                    poke.Cache.browseContext=poke.browseContext;
-                    console.log(poke.browseContext);
+                    poke.pokeIndexData=data;
+                    poke.Cache.pokeIndexData=poke.pokeIndexData;
+                    localStorage['pokeCache'] = JSON.stringify(poke.Cache);
+                    console.log(poke.Cache);
+                    console.log(poke.pokeIndexData);
+                    finish();
                 },
+                
                 failure: function() {
-                    window.setTimeout(pokeRequest,2000);
+                    setTimeout(pokeRequest,2000);
                 }
             });
             
-            // only load 20 at at time -- slower/more network traffic?
-//            if (page !== undefined) {
-//                poke.loadPage=page;
-//                }
-//            
-//            if (poke.browseContext[poke.loadPage]) {
-//                console.log("Already loaded.");
-//                return;
-//            }
-//            $.ajax({
-//                method: "GET",
-//                url: poke.pokeApiUrl+"pokemon/?limit=20&offset="+poke.loadPage*20,
-//                success: function(data) {
-//                    if (poke.loadPage===0) {
-//                        $("#browseButton").addClass("active");
-//                        $("#browseButton").html("Browse Pokemon");
-//                    }
-//                    poke.browseContext[poke.loadPage]=data;
-//                    console.log(poke.browseContext);
-//                    poke.loadPage++;
-//                    console.log(data);
-//                    if (poke.loadPage < poke.maxPage+1) {
-//                        window.setTimeout(pokeRequest,200);
-//                    }
-//                },
-//                failure: function() {
-//                    window.setTimeout(pokeRequest,2000);
-//                }
-//            });
         };
         
         
         var pokeStatRequest = function(pokeId) {
             
             var finish = function() {
+                var statWindow= $("#statWindow");
+                
                 poke.statWindow.pokeData = poke.Cache.pokeData[pokeId];
                 fillStatPage(pokeId);
+                statWindow.removeClass("hidden");
             };
             
             if (poke.Cache.pokeData[pokeId]) {
@@ -240,13 +257,20 @@ $(document).ready(function() {
 
                 $.ajax({
                     method: "GET",
-                    url: poke.browseContext.results[pokeId].url,
+                    url: poke.pokeData[pokeId].url,
+                    
                     success: function(data) {
                         poke.Cache.pokeData[pokeId] = data;
+                        localStorage['pokeCache'] = JSON.stringify(poke.Cache);
                         console.log(data);
                         loading(false);
                         finish();
+                    },
+                    
+                    failure: function() {
+                    setTimeout(pokeStatRequest(pokeId),2000);
                     }
+                    
                 });
             }
         };
@@ -262,18 +286,18 @@ $(document).ready(function() {
         // Toggle button between green and gray (must be one of those to begin with)
         var buttonDisable = function(buttonObject) {
             buttonObject.addClass("btn-secondary");
-            buttonObject.removeClass("btn-success")
+            buttonObject.removeClass("btn-success");
         };
         
         
         var buttonEnable = function(buttonObject) {
             buttonObject.removeClass("btn-secondary");
-            buttonObject.addClass("btn-success")
+            buttonObject.addClass("btn-success");
         };
         
         
         var waitForPage = function() {
-            if (!poke.browseContext[poke.browsePage]) {
+            if (!poke.pokeIndexData[poke.browsePage]) {
                 $("#loadingSign").removeClass("hidden");
                 pokeRequest(poke.browsePage);
                 window.setTimeout(waitForPage,1000);
@@ -312,8 +336,16 @@ $(document).ready(function() {
         
         
         var fillStatPage = function() {
+            var temp = poke.statWindow.pokeData;
             $("#statWindowSprite").removeClass("hidden");
             comboAttack($("#statWindowSprite"));
+            $("#statWindowName").html(temp.name);
+            $("#statWindowAttack").html(temp.stats[4].base_stat);
+            $("#statWindowDefense").html(temp.stats[3].base_stat);
+            $("#statWindowSpAtt").html(temp.stats[2].base_stat);
+            $("#statWindowSpDef").html(temp.stats[1].base_stat);
+            $("#statWindowSpeed").html(temp.stats[0].base_stat);
+            $("#statWindowHP").html(temp.stats[5].base_stat);
             console.log(poke.statWindow.pokeData.name);
         };
         
@@ -344,9 +376,10 @@ $(document).ready(function() {
                         pokeId = "none";
                         pokeName="";
                     } else {
-                        pokeName=poke.browseContext.results[resultsIndex].name;
-                        pokeUrlArray=poke.browseContext.results[resultsIndex].url.split("/");
+                        pokeName=poke.pokeIndexData.results[resultsIndex].name;
+                        pokeUrlArray=poke.pokeIndexData.results[resultsIndex].url.split("/");
                         pokeId=pokeUrlArray[6];
+                        poke.pokeData[pokeId]=poke.pokeIndexData.results[resultsIndex];
                     }
                     
                     imgUrl = "sprites/pokemon/"+pokeId+".png";
@@ -360,7 +393,6 @@ $(document).ready(function() {
             if (poke.mode !== "Browse") {
                 var i;
                 for (i=0;i<imgArray.length;i++) {
-                    console.log("Starting "+ i);
                     startAnimation(imgArray[i],5000,[300,6000]);
                 }
                 poke.mode = "Browse";
@@ -392,12 +424,50 @@ $(document).ready(function() {
             
         };
         
+        var addToParty = function() {
+            var index = poke.party1.length;
+            var fields = $("#leftSidebar"+index).find("div.text-right");
+            console.log(fields);
+            var temp = new Pokemon (poke.statWindow.pokeData);
+            //$(fields[0]).html($("#pokemonRename").val());
+            $(fields[0]).html(temp.name);
+            $(fields[1]).html(temp.name);
+            $(fields[2]).html(temp.maxHp + "/" + temp.maxHp);
+            
+            // TODO constructor with cleaner data for Pokemon object
+            poke.party1.push(temp);
+            if (index === 3) {
+                finishSetup();
+            }
+        };
         
-        // On page load
-        
+        var finishSetup = function() {
+            
+            var i;
+            var partySprites;
+            poke.mode = "Play";
+            $("#browseContainer").addClass("hidden");
+            $("#battleContainer").removeClass("hidden");
+            
+            // load in party images
+            partySprites = $(".partySprites.friendly");
+            for (i=0; i<poke.party1.length; i++) {
+                $(partySprites[i]).attr("src","sprites/pokemon/"+poke.party1[i].id+".png");
+            }
+            
+            // load in enemy party/images
+            
+            // display combat log and buttons
+
+        };
+
+        var loadCache = function() {
+            var cache = localStorage["pokeCache"];
+            if (cache) poke.Cache = JSON.parse(cache);
+        };
         
         // generate browsing table tags
-        (function() {
+        var generateBrowseTable = function() {
             var row;
             var col;
             var thisRow;
@@ -438,7 +508,7 @@ $(document).ready(function() {
                 nextButton.before("<button class=\"btn btn-success browseBtnNum browseBtnSm\">"+(col+2)+"</button>");
             }
             poke.buttonArray = $("#browseContainer .browseBtnNum");
-        })();
+        };
         
         // Pika dance
         var pika1=$("#pikaSprite1");
@@ -452,10 +522,14 @@ $(document).ready(function() {
             someAnimation(pika2);
         },3000));
         
+        loadCache();
+        console.log(poke.Cache);
+        
         if (!poke.noServer) {
             pokeRequest();
         };
         
+        generateBrowseTable();
         
         //Event handlers
         $("#browseButton").click(function() {
@@ -471,18 +545,16 @@ $(document).ready(function() {
         });
         
         
-        $("#browseContainer img.sprite").click(function() {
-            console.log(this);
+        $("#browseContainer .browseImg").click(function() {
+            console.log($(this).children()[0]);
             var id;
-            var statWindow= $("#statWindow");
-            var url = $(this).attr("src");
+            
+            var url = $($(this).children()[0]).attr("src");
             var imgSprite = $("#statWindowSprite");
             id = url.split("/")[2].split(".")[0];
             pokeStatRequest(id);
             
             imgSprite.attr("src",url);
-            imgSprite.addClass("hidden");
-            statWindow.removeClass("hidden");
         });
         
         
@@ -499,13 +571,13 @@ $(document).ready(function() {
 				button.addClass("btn-danger");
 				button.html("Done");
                                 console.log(data);
-				window.POKE.tempPoke=data;
-                                $("#pokemonSprite").attr("src","sprites/pokemon/"+window.POKE.tempPoke.id+".png");
+				poke.tempPoke=data;
+                                $("#pokemonSprite").attr("src","sprites/pokemon/"+poke.tempPoke.id+".png");
                                 $("#pokemonSprite").removeClass("hidden");
                                 $("#addButton").removeClass("hidden");
                                 $("#pokemonName").removeClass("hidden");
                                 $("#pokemonName").html(data.name);
-                                $("#pokemonRename").removeClass("hidden")
+                                $("#pokemonRename").removeClass("hidden");
 				$("#pokemonRename").attr("value","Enter Name");
                                 comboAttack($("#pokemonSprite"));
                                 
@@ -542,41 +614,9 @@ $(document).ready(function() {
         });
 
 
-        $("#addButton").click(function() {
-            var index = poke.party1.length;
-            var temp = poke.tempPoke;
-            var fields = $("#leftSidebar"+index).find("div.text-right");
-            console.log(fields);
-            var maxHP = temp.stats[5].base_stat;
-
-            $(fields[0]).html($("#pokemonRename").val());
-            $(fields[1]).html(temp.name);
-            $(fields[2]).html(maxHP + "/" + maxHP);
-            poke.party1.push(temp);
-            if (index === 3) {
-                $("#addButton").addClass("hidden");
-                $("#startButton").removeClass("hidden");
-            }
-        });
-        
-        
-        $("#startButton").click(function() {
-            var i;
-            var partySprites;
-            poke.mode = "play";
-            $("#setupContainer").addClass("hidden");
-            $("#stopButton").addClass("hidden");
-            $("#battleContainer").removeClass("hidden");
-            
-            // load in party images
-            partySprites = $(".partySprites.friendly");
-            for (i=0; i<poke.party1.length; i++) {
-                $(partySprites[i]).attr("src","sprites/pokemon/"+poke.party1[i].id+".png");
-            }
-            
-            // load in enemy party/images
-            
-            // display combat log and buttons
+        $("#statWindowAddBtn").click(function() {
+            addToParty();
+            $("#statWindow").addClass("hidden");
         });
 
 
@@ -588,23 +628,22 @@ $(document).ready(function() {
         
         $(".selectable").click(function() {
             var clicked=$(this);
+            
             if (poke.selected) {
-                toggleDouble(poke.selected);
+                poke.selected.toggleClass("double");
             };
-            toggleDouble(clicked);
+
             poke.selected=clicked;
+            poke.selected.toggleClass("double");
         });
         
 
-        $("#pokemonSprite").mouseover(function() {
-            thisElement=$(this);
-            if (!$(this).hasClass("block")) {
-                thisElement.addClass("block");
-                item = $(this);
-                comboAttack(item);
-                // block for 2 sec
-                window.setTimeout(function() {thisElement.removeClass("block");},2000);
-            }
+        $("#statWindowSprite").mouseover(function() {
+            comboAttack($(this));
+        });
+        
+        $("#statWindowBackBtn").click(function() {
+            $("#statWindow").addClass("hidden");
         });
 
 });

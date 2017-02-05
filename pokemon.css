@@ -12,6 +12,16 @@ body {
     font-family: courier new;
     font-size: 2vmin;
     color: white;
+    overflow: hidden;
+    text-transform: capitalize;
+}
+
+div {
+    overflow: hidden;
+}
+
+row {
+    overflow: hidden;
 }
 
 .btn.btn-secondary {
@@ -36,6 +46,10 @@ body {
 
 .row {
     margin: 0;
+}
+
+.btn {
+    height: 100%;
 }
 
 .topContainer {
@@ -78,21 +92,13 @@ body {
 }
 
 .smallMenuRow {
-    height:20%;
+    height:15%;
     width: 100%;
 }
 
 .menuRow {
-    height: 60%;
+    height: 40%;
     width: 100%;
-}
-
-div {
-    overflow: hidden;
-}
-
-row {
-    overflow: hidden;
 }
 
 #loadingSign {
@@ -123,14 +129,22 @@ row {
     z-index: 8;    
 }
 
-/*#statWindow div {
-    height: 100%;
-    align-content: center;
+#statWindow .row {
+    height: 10%;
+    margin: 2%;
+}
+
+.row#statWindowSpriteRow {
+    height: 65%;
+}
+
+.row#statWindowButtonRow {
+    height: 10%;
 }
 
 #statWindowSprite {
-
-}*/
+    height: 100%;
+}
 
 .tinyBrowseRow {
     background-color:black;
@@ -166,7 +180,6 @@ row {
     max-height: 100%;
     max-width: 100%;
     font-size: 1.8vmin;
-    text-transform: capitalize;
 }
 
 #browseContainer .btn {
@@ -202,7 +215,7 @@ row {
 }
 
 .sprite.double {
-    height: 80%;
+    height: 100%;
     padding-top: 10%;
     padding-bottom: 0;
 }
@@ -212,7 +225,7 @@ row {
     padding-bottom: 0;
     padding-right: 0;
     padding-left: 10%;
-    height: 60%;
+    height: 80%;
 }
 
 .sprite.jumping {
@@ -245,10 +258,9 @@ row {
 }
 
 .sideBarText {
-    font-size: 2vmin;
+    font-size: 1.75vmin;
     color: white;
     padding: 0;
-    text-transform: capitalize;
 }
 
 .textBox {
@@ -256,4 +268,9 @@ row {
     length: 80%;
     width: 80%;
     font-size: 2vmin;
+}
+
+#pikaSprite1,#pikaSprite2 {
+    height: unset;
+    width: 100%;
 }

@@ -33,12 +33,12 @@
                     <div id="leftSidebar0" class="row pokeRow">
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-5 text-left sideBarText">Nickame:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
@@ -52,12 +52,12 @@
                     <div id="leftSidebar1" class="row pokeRow">
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-5 text-left sideBarText">Nickame:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
@@ -71,12 +71,12 @@
                     <div id="leftSidebar2" class="row pokeRow">
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-5 text-left sideBarText">Nickame:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
@@ -90,12 +90,12 @@
                     <div id="leftSidebar3" class="row pokeRow">
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Name:</div>
+                            <div class="col-xs-5 text-left sideBarText">Nickame:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
                         <div class="row">
-                            <div class="col-xs-5 text-left sideBarText">Class:</div>
+                            <div class="col-xs-5 text-left sideBarText">Name:</div>
                             <div class="col-xs-7 text-right sideBarText"></div>
                         </div>
 
@@ -134,14 +134,14 @@
                     </div>
 
                     <div class="row menuRow">
-                        <div class="col-xs-2"></div>
-                        <div class="col-xs-4 text-center">
-                            <img id="pikaSprite1" class="flipped sprite" title="PIKAAAA!!" src="sprites/pokemon/25.png">
+                        <div class="col-xs-3"></div>
+                        <div class="col-xs-3 text-center">
+                            <img id="pikaSprite1" class="double flipped sprite" title="PIKAAAA!!" src="sprites/pokemon/25.png">
                         </div>
                         
-                        <div class="col-xs-4 text-center">
+                        <div class="col-xs-3 text-center">
 
-                            <img id="pikaSprite2" alt="test" title="PIKAAAA!!" class="sprite" src="sprites/pokemon/25.png">
+                            <img id="pikaSprite2" alt="test" title="PIKAAAA!!" class="double sprite" src="sprites/pokemon/25.png">
                         </div>
 
                     </div>    
@@ -149,38 +149,73 @@
                     <div class="row smallMenuRow text-center">
                         <div class="col-xs-4"></div>
                         <div class="col-xs-4">
-                            <div id="pokemonName" class="text-center hidden"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="row smallMenuRow text-center">
-                        <div class="col-xs-4"></div>
-                        <div class="col-xs-4">
-                            <input type="text" id="pokemonRename" class="textBox text-center hidden">
-                        </div>
-                    </div>
-
-                    <div class="row smallMenuRow text-center">
-                        <div class="col-xs-4"></div>
-                        <div class="col-xs-4">
                             <button id="addButton" class="btn btn-success hidden">Add to Party</button>
-                            <button id="startButton" class="ctn btn-success hidden">Start</button>
+                            <button id="startButton" class="btn btn-success hidden">Start</button>
                         </div>
                     </div>
                     
-
-
-
-
                 </div>
                 
                 <div id="browseContainer" class="col-xs-6 pokeContainer hidden">
                     <div id="statWindow" class="hidden">
-                        <div class="col-xs-6"></div>
-                        <div class="col-xs-6">
-                            <img src="" id="statWindowSprite" class="sprite">
+                        <div class="row">
+                            <div id="statWindowName" class="col-xs-12 text-center"></div>
                         </div>
                         
+                        <div class="col-xs-6">
+                            
+                            <div class="row"></div>
+                            <div class="row">
+                                <div class="col-xs-8 text-left">Attack:</div>
+                                <div id="statWindowAttack" class="col-xs-4 text-right"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-8 text-left">Defense:</div>
+                                <div id="statWindowDefense" class="col-xs-4 text-right"></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-xs-8 text-left">Sp Att:</div>
+                                <div id="statWindowSpAtt" class="col-xs-4 text-right"></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-xs-8 text-left">Sp Def:</div>
+                                <div id="statWindowSpDef" class="col-xs-4 text-right"></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-xs-8 text-left">
+                                    Speed:
+                                </div>
+                                <div id="statWindowSpeed" class="col-xs-4 text-right"></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-xs-8 text-left">HP:</div>
+                                <div id="statWindowHP" class="col-xs-4 text-right"></div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-xs-6">
+                            <div id="statWindowSpriteRow" class="row">
+                                <img src="" id="statWindowSprite" class="sprite">
+                            </div>
+
+
+                            <div id="statWindowButtonRow" class="row">
+                                <div class="col-xs-6">
+                                    <button id="statWindowAddBtn" class="btn btn-success">Add to Party</button>
+                                </div>
+                                <div class="col-xs-6">
+                                    <button id="statWindowBackBtn" class="btn btn-danger">Back</button>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
                 </div>
 
