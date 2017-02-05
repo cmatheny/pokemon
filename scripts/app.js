@@ -9,7 +9,7 @@
  */
 var POKE = {
     pokeApiUrl:"https://pokeapi.co/api/v2/",
-    browseContext: [],
+    browseContext: null,
     mode: "Select",
     running: true,
     animations: [],
@@ -18,8 +18,18 @@ var POKE = {
     browsePage: 0,
     loadPage: 0,
     noServer: false,
-    maxPage: 0, //37
-    numBrowseButtons: 7 // Should be odd and probably 7 or less
+    maxPage: 39, // 39
+    maxPoke: 783, // 783
+    numBrowseButtons: 7, // Should be odd and probably 7 or less
+    
+    statWindow: {
+        pokeData: null
+    },
+    
+    Cache: {
+        browseContext: [],
+        pokeData: []
+    }
 };
 
 $(document).ready(function() {
@@ -126,43 +136,121 @@ $(document).ready(function() {
             
         };
         
-        var startAnimation = function(item,interval) {
-            someAnimation(item);
-            poke.animations.push(setInterval(function(){someAnimation(item);},interval));
-        }
+        var startAnimation = function(item,interval,delay) {
+            // calls someAnimation() on item at the specified interval in ms
+            // if Delay is specified, it will wait that long before the first call
+            // array of two numbers for delay will pick a random number between the two
+            var max;
+            var min;
+            if (Array.isArray(delay)) {
+                if (delay.length===2) {
+                    max = Math.max.apply(Math, delay);
+                    min = Math.min.apply(Math, delay);
+                    delay=Math.random()*(max-min)+min;
+                } else delay = undefined;
+            }
+            window.setTimeout(function(){
+                someAnimation(item);
+                poke.animations.push(setInterval(function(){someAnimation(item);},interval));
+            },delay);
+        };
+        
+        var stopAllAnimations = function() {
+            while (poke.animations.length>0) {
+                console.log(poke.animations.length+" left.");
+                clearInterval(poke.animations.pop());
+            }
+        };
         
         var pokeRequest = function(page) {
-
-            if (page !== undefined) {
-                poke.loadPage=page;
-                }
             
-            if (poke.browseContext[poke.loadPage]) {
+            if (poke.Cache.browseContext.length>0) {
+                poke.browseContext=poke.Cache.browseContext;
                 console.log("Already loaded.");
                 return;
-            }
+            }            
             
-            console.log("loading page");        
+            console.log("loading page");  
+            
             $.ajax({
                 method: "GET",
-                url: poke.pokeApiUrl+"pokemon/?limit=20&offset="+poke.loadPage*20,
+                url: poke.pokeApiUrl+"pokemon/?limit="+poke.maxPoke,
                 success: function(data) {
                     if (poke.loadPage===0) {
                         $("#browseButton").addClass("active");
                         $("#browseButton").html("Browse Pokemon");
                     }
-                    poke.browseContext[poke.loadPage]=data;
+                    poke.browseContext=data;
+                    poke.Cache.browseContext=poke.browseContext;
                     console.log(poke.browseContext);
-                    poke.loadPage++;
-                    console.log(data);
-                    if (poke.loadPage < poke.maxPage+1) {
-                        window.setTimeout(pokeRequest,200);
-                    }
                 },
                 failure: function() {
                     window.setTimeout(pokeRequest,2000);
                 }
             });
+            
+            // only load 20 at at time -- slower/more network traffic?
+//            if (page !== undefined) {
+//                poke.loadPage=page;
+//                }
+//            
+//            if (poke.browseContext[poke.loadPage]) {
+//                console.log("Already loaded.");
+//                return;
+//            }
+//            $.ajax({
+//                method: "GET",
+//                url: poke.pokeApiUrl+"pokemon/?limit=20&offset="+poke.loadPage*20,
+//                success: function(data) {
+//                    if (poke.loadPage===0) {
+//                        $("#browseButton").addClass("active");
+//                        $("#browseButton").html("Browse Pokemon");
+//                    }
+//                    poke.browseContext[poke.loadPage]=data;
+//                    console.log(poke.browseContext);
+//                    poke.loadPage++;
+//                    console.log(data);
+//                    if (poke.loadPage < poke.maxPage+1) {
+//                        window.setTimeout(pokeRequest,200);
+//                    }
+//                },
+//                failure: function() {
+//                    window.setTimeout(pokeRequest,2000);
+//                }
+//            });
+        };
+        
+        var pokeStatRequest = function(pokeId) {
+            
+            var finish = function() {
+                poke.statWindow.pokeData = poke.Cache.pokeData[pokeId];
+                fillStatPage(pokeId);
+            };
+            
+            if (poke.Cache.pokeData[pokeId]) {
+                finish();
+                console.log("Already loaded.");
+            } else {
+            
+                loading(true);
+
+                $.ajax({
+                    method: "GET",
+                    url: poke.browseContext.results[pokeId].url,
+                    success: function(data) {
+                        poke.Cache.pokeData[pokeId] = data;
+                        console.log(data);
+                        loading(false);
+                        finish();
+                    }
+                });
+            }
+        };
+        
+        var loading = function(boolVal) {
+            if (boolVal) {
+                $("#loadingSign").removeClass("hidden");
+            } else $("#loadingSign").addClass("hidden");
         };
         
         // Toggle button between green and gray (must be one of those to begin with)
@@ -189,10 +277,11 @@ $(document).ready(function() {
         
         var setBrowseButtons = function() {
             var currPage = poke.browsePage;
-            var lowPage = Math.max(0,poke.browsePage-3);
-            var highPage = Math.min(poke.maxPage+1,poke.browsePage+3);
+            var range = (poke.numBrowseButtons-1)/2;
+            var lowPage = Math.max(0,poke.browsePage-range);
+            var highPage = Math.min(poke.maxPage+1,poke.browsePage+range);
             if (highPage === poke.maxPage+1) {
-                lowPage = poke.maxPage - 6;
+                lowPage = poke.maxPage - 2*range;
             }
             var pageIndex = lowPage;
             var index;
@@ -212,34 +301,78 @@ $(document).ready(function() {
             }
         };
         
+        
+        var fillStatPage = function() {
+            $("#statWindowSprite").removeClass("hidden");
+            comboAttack($("#statWindowSprite"));
+            console.log(poke.statWindow.pokeData.name);
+        };
+        
+        
         var fillBrowseContainer = function(pageNum) {
             var row;
             var col;
             var thisImage;
             var thisText;
-            var index;
+            var index = 0;
+            var resultsIndex = pageNum*20;
             var pokeName;
             var pokeId;
             var pokeUrlArray;
-            poke.browsePage=pageNum;
-            console.log("page: "+(poke.browsePage+1));            
-            console.log(poke.browseContext);
+            var imgArray = [];
+            var imgUrl;
+            poke.browsePage=pageNum;           
             
             for (row=0;row<4;row++) {
                 for (col=0;col<5;col++) {
                     index=col+5*row;
-                    pokeUrlArray=poke.browseContext[poke.browsePage].results[index].url.split("/");
-                    pokeId=pokeUrlArray[6];
-                    pokeName=poke.browseContext[poke.browsePage].results[index].name;
+                    resultsIndex++;
+
+                    
                     thisImage=$("div.browse img")[index];
                     thisText=$("div.browse .browseText")[index];
-                    $(thisImage).attr("src","sprites/pokemon/"+pokeId+".png");
+                    if (resultsIndex >= poke.maxPoke) {
+                        pokeId = "none";
+                        pokeName="";
+                    } else {
+                        pokeName=poke.browseContext.results[resultsIndex].name;
+                        pokeUrlArray=poke.browseContext.results[resultsIndex].url.split("/");
+                        pokeId=pokeUrlArray[6];
+                    }
+                    
+                    imgUrl = "sprites/pokemon/"+pokeId+".png";
+                    $(thisImage).attr("src",imgUrl);
                     $(thisText).html(pokeName);
-                    console.log($(thisImage));
-                    startAnimation($(thisImage),5000);
-                    // poke.animations.push(setInterval(function(){someAnimation($(thisImage));},10));
+                    imgArray[index] = $(thisImage);
+                    }
+
                 }
+            
+            if (poke.mode !== "Browse") {
+                var i;
+                for (i=0;i<imgArray.length;i++) {
+                    console.log("Starting "+ i);
+                    startAnimation(imgArray[i],5000,[300,6000]);
+                }
+                poke.mode = "Browse";
+                
+            
             }
+            
+//            for (row=0;row<4;row++) {
+//                for (col=0;col<5;col++) {
+//                    index=col+5*row;
+//                    pokeUrlArray=poke.browseContext[poke.browsePage].results[index].url.split("/");
+//                    pokeId=pokeUrlArray[6];
+//                    pokeName=poke.browseContext[poke.browsePage].results[index].name;
+//                    thisImage=$("div.browse img")[index];
+//                    thisText=$("div.browse .browseText")[index];
+//                    $(thisImage).attr("src","sprites/pokemon/"+pokeId+".png");
+//                    $(thisText).html(pokeName);
+//                    console.log($(thisImage));
+//                    startAnimation($(thisImage),5000);
+//                }
+//            }
             
             setBrowseButtons();
             if (poke.browsePage === 0) {
@@ -266,9 +399,9 @@ $(document).ready(function() {
         };
         
         
-
-        
         // On page load
+        
+        
         // generate browsing table tags
         (function() {
             var row;
@@ -329,13 +462,6 @@ $(document).ready(function() {
             pokeRequest();
         };
         
-
-        
-//        $("#loadNextButton").click(function(){
-//            
-//            var input;
-//            console.log("loading2");
-//        });
         
         //Event handlers
         $("#browseButton").click(function() {
@@ -350,19 +476,21 @@ $(document).ready(function() {
             $("#browseContainer").removeClass("hidden");
         });
         
-        $("#browseContainer img").click(function() {
+        
+        $("#browseContainer img.sprite").click(function() {
             console.log(this);
             var id;
             var statWindow= $("#statWindow");
-            var url = $(this).attr("src")
+            var url = $(this).attr("src");
+            var imgSprite = $("#statWindowSprite");
             id = url.split("/")[2].split(".")[0];
-            // loadStats(id);
+            pokeStatRequest(id);
             
+            imgSprite.attr("src",url);
+            imgSprite.addClass("hidden");
             statWindow.removeClass("hidden");
-            $("#statWindowSprite").attr("src",url);
-            comboAttack($("#statWindowSprite"));
-            
         });
+        
         
 	$("#submitButton").click(function() {
 		
@@ -391,40 +519,34 @@ $(document).ready(function() {
 		});
 	});
         
-        $("#browseContainer .buttonRow").click(function() {
+        
+        $("#browseContainer .buttonRow .btn").click(function() {
             var target=event.target;
-            var buttonVal = $(target).html();
-
-            console.log(buttonVal);            
+            var buttonVal = $(target).html();           
             
             if (buttonVal === "&lt;&lt;") {
                 poke.browsePage=0;
-                waitForPage();
             } else if (buttonVal === "&lt; 10") {
                 poke.browsePage=Math.max(0,poke.browsePage-10);
-                waitForPage();
             } else if (buttonVal === "&lt; Prev") {
                 if (poke.browsePage > 0) {
                     poke.browsePage--;
-                    waitForPage();
                 }
             } else if (buttonVal === "Next &gt;") {
                 if (poke.browsePage < poke.maxPage) {
                     poke.browsePage++;
-                    waitForPage();
                 }
             } else if (buttonVal === "10 &gt;") {
                 poke.browsePage=Math.min(poke.maxPage,poke.browsePage+10);
-                waitForPage();
             } else if (buttonVal === "&gt;&gt;") {
                 poke.browsePage=poke.maxPage;
                 console.log(poke.maxPage);
-                waitForPage();
             } else if ($.isNumeric(buttonVal)) {
                 poke.browsePage=buttonVal-1;
-                waitForPage();
             }
+            fillBrowseContainer(poke.browsePage);
         });
+
 
         $("#addButton").click(function() {
             var index = poke.party1.length;
@@ -442,6 +564,7 @@ $(document).ready(function() {
                 $("#startButton").removeClass("hidden");
             }
         });
+        
         
         $("#startButton").click(function() {
             var i;
@@ -464,10 +587,7 @@ $(document).ready(function() {
 
 
         $("#stopButton").click(function() {
-            while (poke.animations.length) {
-                clearInterval(poke.animations.pop());
-                clearInterval(poke.animations.pop());
-        }
+            stopAllAnimations();
             $(this).addClass("hidden");
         });
         
