@@ -244,6 +244,7 @@ $(document).ready(function() {
                 poke.statWindow.pokeData = poke.Cache.pokeData[pokeId];
                 fillStatPage(pokeId);
                 statWindow.removeClass("hidden");
+                $("#browseContainer .btn").removeAttr("disabled");
             };
             
             if (poke.Cache.pokeData[pokeId]) {
@@ -344,6 +345,7 @@ $(document).ready(function() {
             $("#statWindowSpDef").html(temp.stats[1].base_stat);
             $("#statWindowSpeed").html(temp.stats[0].base_stat);
             $("#statWindowHP").html(temp.stats[5].base_stat);
+            $("#statWindow .btn").removeAttr("disabled");
         };
         
         
@@ -420,19 +422,24 @@ $(document).ready(function() {
         };
         
         var getNickname = function() {
-            
-            addToParty();
+            $("#nicknameWindow").removeClass("hidden");
         };
         
         var addToParty = function() {
             var index = poke.party1.length;
             var fields = $("#leftSidebar"+index).find("div.text-right");
             var temp = new Pokemon (poke.statWindow.pokeData);
-            
+            var nickWindow = $($("#nicknameWindow input")[0])
+            var nickname = nickWindow.val();
+            nickWindow.val("");
+            temp.nickname = nickname;
             //$(fields[0]).html($("#pokemonRename").val());
-            $(fields[0]).html(temp.name);
+            $(fields[0]).html(nickname);
             $(fields[1]).html(temp.name);
             $(fields[2]).html(temp.maxHp + "/" + temp.maxHp);
+            
+            $("#nicknameWindow").addClass("hidden");
+            $("#statWindow").addClass("hidden");
             
             // TODO constructor with cleaner data for Pokemon object
             poke.party1.push(temp);
@@ -547,13 +554,12 @@ $(document).ready(function() {
         
         $("#browseContainer .browseImg").click(function() {
             var id;
-            
-            
             var url = $($(this).children()[0]).attr("src");
             if (url === (poke.spriteUrl + "none.png")) return;
-            
+            $("#browseContainer .btn").attr("disabled","disabled");
             var imgSprite = $("#statWindowSprite");
             id = url.split("/")[2].split(".")[0];
+            
             pokeStatRequest(id);
             
             imgSprite.attr("src",url);
@@ -588,10 +594,15 @@ $(document).ready(function() {
 
 
         $("#statWindowAddBtn").click(function() {
+            $("#statWindow .btn").attr("disabled","disabled");
             getNickname();
-            $("#statWindow").addClass("hidden");
+            
         });
 
+        $("#nicknameSubmit").click(function() {
+            $("#nickname")
+            addToParty();
+        })
 
         $("#stopButton").click(function() {
             stopAllAnimations();

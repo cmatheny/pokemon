@@ -132,8 +132,28 @@ img {
     margin-top: 7%;
 }
 
-.row.row30 {
+.row10 {
+    height: 10%;
+    padding: 2%;
+}
+
+.row20 {
+    height: 20%;
+    padding: 2%;
+}
+
+.row30 {
     height: 30%;
+    padding: 2%;
+}
+
+.row40 {
+    height: 40%;
+    padding: 2%;
+}
+
+.row50 {
+    height: 50%;
     padding: 2%;
 }
 
@@ -254,15 +274,17 @@ img {
 }
 
 .sideBarText {
-    font-size: 1.75vmin;
+    font-size: 1.17vw;
     color: white;
     padding: 0;
 }
 
 .textBox {
-    align-content: center;
+    color: black;
+    text-align: center;
     width: 80%;
-    font-size: 2vmin;
+    height: 100%;
+    font-size: 2.5vmin;
 }
 
 #pikaSprite1,#pikaSprite2 {
@@ -273,6 +295,7 @@ img {
     position: absolute;
     color: white;
     font-size: 2vw;
+    font-weight: bold;
     text-align: center;
     background-color: black;
     outline: 1vw white solid;
@@ -298,10 +321,16 @@ img {
 
 .popup#nicknameWindow {
     bottom: 40%;
-    left: 40%;
-    width: 20%;
+    left: 35%;
+    width: 30%;
     height: 20%;
+    padding: 1%;
+    padding-top: 2%;
     z-index: 8;
+}
+
+#nicknameWindow button {
+    width: 80%;
 }
 
 .pikaDiv {
