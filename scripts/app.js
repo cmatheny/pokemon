@@ -16,6 +16,12 @@ var POKE = {
     maxPoke: 783, // 783
     numBrowseButtons: 7, // Should be odd and probably 7 or less
     pokeData: [],
+    gold: 100,
+    
+    SaveData: {
+        party: [],
+        gold: 0
+    },
     
     statWindow: {
         pokeData: null
@@ -24,6 +30,44 @@ var POKE = {
     Cache: {
         pokeIndexData: [],
         pokeData: []
+    },
+    
+    Pokemon: function(pokeData, nickname, id, name, hp, maxHp, attack, defense,
+            spAttack, spDefense, speed) {
+        if ((!(typeof window === "undefined") && this === window) || 
+                (!(typeof global === "undefined") && this === global)) {
+            throw  Error("Constructor called as function");
+        }
+
+        if (!pokeData) {
+            this.nickname=nickname;
+            this.name = name;
+            this.hp = hp;
+            this.maxHp = maxHp;
+            this.attack = attack;
+            this.defense = defense;
+            this.spAttack = spAttack;
+            this.spDefense = spDefense;
+            this.speed = speed;
+            this.id = id;
+            this.origData=null;
+        } else {
+            if (nickname) {
+                this.nickname=nickname;
+            } else this.nickname=pokeData.name;
+
+            this.name = pokeData.name;
+            this.hp = pokeData.stats[5].base_stat;
+            this.maxHp = pokeData.stats[5].base_stat;
+            this.attack = pokeData.stats[4].base_stat;
+            this.defense = pokeData.stats[3].base_stat;
+            this.spAttack = pokeData.stats[1].base_stat;
+            this.spDefense = pokeData.stats[2].base_stat;
+            this.speed = pokeData.stats[0].base_stat;
+            this.id = pokeData.id;
+            this.origData=pokeData;                
+        }
+        return this;
     }
 };
 
@@ -31,43 +75,7 @@ $(document).ready(function() {
 	// DOM is ready
 	var poke=POKE;
 
-        var Pokemon = function(pokeData, nickname, id, name, hp, maxHp, attack, defense,
-            spAttack, spDefense, speed) {
-            if ((!(typeof window === "undefined") && this === window) || 
-                    (!(typeof global === "undefined") && this === global)) {
-                throw  Error("Constructor called as function");
-            }
-            
-            if (!pokeData) {
-                this.nickname=nickname;
-                this.name = name;
-                this.hp = hp;
-                this.maxHp = maxHp;
-                this.attack = attack;
-                this.defense = defense;
-                this.spAttack = spAttack;
-                this.spDefense = spDefense;
-                this.speed = speed;
-                this.id = id;
-                this.origData=null;
-            } else {
-                if (nickname) {
-                    this.nickname=nickname;
-                } else this.nickname=pokeData.name;
-                
-                this.name = pokeData.name;
-                this.hp = pokeData.stats[5].base_stat;
-                this.maxHp = pokeData.stats[5].base_stat;
-                this.attack = pokeData.stats[4].base_stat;
-                this.defense = pokeData.stats[3].base_stat;
-                this.spAttack = pokeData.stats[1].base_stat;
-                this.spDefense = pokeData.stats[2].base_stat;
-                this.speed = pokeData.stats[0].base_stat;
-                this.id = pokeData.id;
-                this.origData=pokeData;                
-            }
-            return this;
-        };
+
         
         // Functions
         var wiggle = function(item,times) {
@@ -83,7 +91,7 @@ $(document).ready(function() {
             }
         };
         
-        var attack = function(item, times) {
+        var attackAnim = function(item, times) {
             var timer = 0;
             var i;
             
@@ -106,7 +114,7 @@ $(document).ready(function() {
             };
             
              if (doAttack) {
-                 attack(item, times);
+                 attackAnim(item, times);
              }
              
             for (i=0; i<times*2; i++) {
@@ -129,7 +137,7 @@ $(document).ready(function() {
 
             wiggle(item,2);
             window.setTimeout(function(){jump(item,1);},400);
-            window.setTimeout(function(){attack(item,2);},650);
+            window.setTimeout(function(){attackAnim(item,2);},650);
             }
 
         };
@@ -139,13 +147,13 @@ $(document).ready(function() {
             var delay;
             var times;
 
-            // 0-3:jump, 4-7:wiggle, 8:wigglejump, 9:combo!
+            // 1-2:jump, 4-5:wiggle, 3-6:attack, 7:jumpAttack, 8:wigglejump, 9:combo!
             type = Math.round(Math.random()*9);
             if (type===0) return;
             // 0-2 seconds to delay (3-5 total)
             delay = Math.random()*2000;
 
-            if (type<4 || type===8){
+            if ([1,2,3,8].includes(type)){
                 // do it 2-4 times
                 times = Math.round(Math.random()*2+2);
                 
@@ -154,14 +162,21 @@ $(document).ready(function() {
                 }),delay);
             };
             
-            if (type>=4 && type<9) {
+            if ([4,5,8].includes(type)) {
                 // do it 2-4 times
                 times = Math.round(Math.random()*2+2);
                 
                 window.setTimeout((function() {
                     wiggle(item,times);
                 }),delay);
-            }; 
+            };
+            
+            if ([3,6,7].includes(type)){
+                // do it 2-4 times
+                times = Math.round(Math.random()*2+2);
+                attackAnim(item,times);
+            };
+            
             if (type === 9) {
                 comboAttack(item);
             };
@@ -222,9 +237,7 @@ $(document).ready(function() {
                 success: function(data) {
                     poke.pokeIndexData=data;
                     poke.Cache.pokeIndexData=poke.pokeIndexData;
-                    localStorage['pokeCache'] = JSON.stringify(poke.Cache);
-                    console.log(poke.Cache);
-                    console.log(poke.pokeIndexData);
+                    localStorage['pokeIndexCache'] = JSON.stringify(poke.Cache.pokeIndexData);
                     finish();
                 },
                 
@@ -261,7 +274,7 @@ $(document).ready(function() {
                     
                     success: function(data) {
                         poke.Cache.pokeData[pokeId] = data;
-                        localStorage['pokeCache'] = JSON.stringify(poke.Cache);
+                        localStorage['pokeDataCache'] = JSON.stringify(poke.Cache.pokeData);
                         loading(false);
                         finish();
                     },
@@ -355,7 +368,7 @@ $(document).ready(function() {
             var thisImage;
             var thisText;
             var index = 0;
-            var resultsIndex = pageNum*20;
+            var resultsIndex = pageNum*20-1;
             var pokeName;
             var pokeId;
             var pokeUrlArray;
@@ -430,28 +443,37 @@ $(document).ready(function() {
         };
         
         var addToParty = function() {
-            var index = poke.party1.length;
-            var fields = $("#leftSidebar"+index).find("div.text-right");
-            var temp = new Pokemon (poke.statWindow.pokeData);
+            var temp = new poke.Pokemon (poke.statWindow.pokeData);
             var nickWindow = $("#nicknameTextbox");
-            var nickname = nickWindow.val();
+            
+            // get nickname from textbox
+            temp.nickname = nickWindow.val() || temp.name;
             $("#nicknameTextbox").attr("disabled","disabled");
             nickWindow.val("");
-            temp.nickname = nickname;
-            //$(fields[0]).html($("#pokemonRename").val());
-            $(fields[0]).html(nickname);
-            $(fields[1]).html(temp.name);
-            $(fields[2]).html(temp.maxHp + "/" + temp.maxHp);
+
+            poke.party1.push(temp);
+            addToSidebar(temp);
             
             $("#nicknameWindow").addClass("hidden");
             $("#statWindow").addClass("hidden");
+        };
+        
+        var addToSidebar = function(pokemon,side) {
+            side = side || "left";
+            var index = 4-$("#"+side+"Container > .pokeRow.hidden").length;
             
-            // TODO constructor with cleaner data for Pokemon object
-            poke.party1.push(temp);
+            var sidebarRow = $("#"+side+"Sidebar"+index);
+            var fields = sidebarRow.find("div.text-right");
+            sidebarRow.removeClass("hidden");
+            
+            $(fields[0]).html(pokemon.nickname);
+            $(fields[1]).html(pokemon.name);
+            $(fields[2]).html(pokemon.maxHp + "/" + pokemon.maxHp);
+            
             if (index === 3) {
                 finishSetup();
             }
-        };
+        }
         
         var finishSetup = function() {
             
@@ -459,6 +481,7 @@ $(document).ready(function() {
             var partySprites;
             poke.mode = "Play";
             $("#browseContainer").addClass("hidden");
+            $("#setupContainer").addClass("hidden");
             $("#battleContainer").removeClass("hidden");
             
             // load in party images
@@ -473,9 +496,30 @@ $(document).ready(function() {
 
         };
 
+        var saveGame = function() {
+            poke.SaveData.gold = poke.gold;
+            poke.SaveData.party = poke.party1;
+            localStorage["pokeSave"] = JSON.stringify(poke.SaveData);
+        };
+        
         var loadCache = function() {
-            var cache = localStorage["pokeCache"];
-            if (cache) poke.Cache = JSON.parse(cache);
+            var cache = localStorage["pokeDataCache"];
+            if (cache) poke.Cache.pokeData = JSON.parse(cache);
+            var cache2 = localStorage["pokeIndexCache"];
+            if (cache2) poke.Cache.pokeIndexData = JSON.parse(cache2);
+
+        };
+        
+        var loadSave = function() {
+            var i;
+            var save = localStorage["pokeSave"];
+            if (save) poke.SaveData = JSON.parse(save);
+            poke.gold=poke.SaveData.gold;
+            poke.party1=poke.SaveData.party;
+            for (i=0;i<poke.party1.length;i++) {
+                console.log(i);
+                addToSidebar(poke.party1[i]);
+            }
         };
         
         // generate browsing table tags
@@ -535,7 +579,10 @@ $(document).ready(function() {
         },2000));
         
         loadCache();
-        console.log(poke.Cache);
+        loadSave();
+        console.log(poke.Cache.pokeData);
+        console.log(poke.Cache.pokeIndexData);
+        console.log(poke.SaveData);
         
         if (!poke.noServer) {
             pokeRequest();
@@ -633,5 +680,30 @@ $(document).ready(function() {
         $("#statWindowBackBtn").click(function() {
             $("#statWindow").addClass("hidden");
         });
-
+        
+        $("#settingsButton").click(function() {
+            console.log('settings');
+            $("#settingsWindow").removeClass("hidden");
+        });
+        
+        $("#settingsWindow button").click(function() {
+            var clicked = $(this).html();
+            if (clicked==="About PBA") {
+                $("#aboutWindow").removeClass("hidden");
+            } else if (clicked==="Save Game") {
+                saveGame();
+            } else if (clicked==="Clear Cache") {
+                localStorage.removeItem("pokeIndexCache");
+                localStorage.removeItem("pokeDataCache");
+            } else if (clicked==="Clear Save Data") {
+                localStorage.removeItem("pokeSave");
+                location.reload();
+            } else if ($(this).hasClass("btn-close")) {
+                $("#settingsWindow").addClass("hidden");
+            }
+        });
+        
+        $("#aboutWindow button").click(function() {
+            $("#aboutWindow").addClass("hidden");
+        });
 });
