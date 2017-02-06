@@ -280,7 +280,8 @@ img {
 }
 
 .textBox {
-    color: black;
+    color: transparent;
+    text-shadow : 0 0 0 #000;
     text-align: center;
     width: 80%;
     height: 100%;

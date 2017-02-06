@@ -422,15 +422,20 @@ $(document).ready(function() {
         };
         
         var getNickname = function() {
+            $("#statWindow .btn").attr("disabled","disabled");
             $("#nicknameWindow").removeClass("hidden");
+            var input = $("#nicknameTextbox");
+            input.removeAttr("disabled");
+            input.focus();
         };
         
         var addToParty = function() {
             var index = poke.party1.length;
             var fields = $("#leftSidebar"+index).find("div.text-right");
             var temp = new Pokemon (poke.statWindow.pokeData);
-            var nickWindow = $($("#nicknameWindow input")[0])
+            var nickWindow = $("#nicknameTextbox");
             var nickname = nickWindow.val();
+            $("#nicknameTextbox").attr("disabled","disabled");
             nickWindow.val("");
             temp.nickname = nickname;
             //$(fields[0]).html($("#pokemonRename").val());
@@ -593,17 +598,16 @@ $(document).ready(function() {
         });
 
 
-        $("#statWindowAddBtn").click(function() {
-            $("#statWindow .btn").attr("disabled","disabled");
-            getNickname();
-            
+        $("#statWindowAddBtn").click(getNickname);
+
+        $("#nicknameSubmit").click(addToParty);
+
+        $("#nicknameTextbox").on("keypress", function(e) {
+            if (e.key === "Enter"){
+                addToParty();
+            }
         });
-
-        $("#nicknameSubmit").click(function() {
-            $("#nickname")
-            addToParty();
-        })
-
+        
         $("#stopButton").click(function() {
             stopAllAnimations();
             $(this).addClass("hidden");
