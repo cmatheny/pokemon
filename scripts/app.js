@@ -16,11 +16,12 @@ var POKE = {
     maxPoke: 783, // 783
     numBrowseButtons: 7, // Should be odd and probably 7 or less
     pokeData: [],
-    gold: 100,
+    __gold: 100,
+    goldTagHandle: null,
     
     SaveData: {
         party: [],
-        gold: 0
+        gold: 100
     },
     
     statWindow: {
@@ -68,6 +69,20 @@ var POKE = {
             this.origData=pokeData;                
         }
         return this;
+    },
+    
+    getGold: function() {
+        return this.gold;
+    },
+    
+    addGold: function(amount) {
+        if (this.gold+amount < 0) {
+            return false;
+        }
+        this.gold=this.gold+amount;
+        // update display in sidebar
+        this.goldTagHandle.html(this.gold);        
+        return true;
     }
 };
 
@@ -588,6 +603,7 @@ $(document).ready(function() {
             pokeRequest();
         };
         
+        poke.goldTagHandle = $("#goldAmount");
         generateBrowseTable();
         
         //Event handlers
