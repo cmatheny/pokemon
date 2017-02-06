@@ -366,11 +366,11 @@ img {
     z-index: 9;
 }
 
-.popup#settingsButton {
+.popup#settingsButtons {
     bottom: 3%;
     right: 2%;
     height: 4%;
-    width: 2.5%;
+    width: 7%;
     background-color: transparent;
     outline: initial;
 }

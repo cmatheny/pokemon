@@ -8,6 +8,7 @@ var POKE = {
     mode: "Select",
     running: true,
     animations: [],
+    audio: [],
     party1: [],
     party2: [],
     browsePage: 0,
@@ -17,6 +18,8 @@ var POKE = {
     numBrowseButtons: 7, // Should be odd and probably 7 or less
     pokeData: [],
     __gold: 100,
+    sfx: {},
+    
     goldTagHandle: null,
     
     SaveData: {
@@ -28,9 +31,23 @@ var POKE = {
         pokeData: null
     },
     
+    Settings: {
+        playAudio: true,
+        playSfx: true
+    },
+    
     Cache: {
         pokeIndexData: [],
         pokeData: []
+    },
+    
+    stopAnimations: function(which) {
+        var i;
+        if (which==="all") {
+            for (i=0;i<POKE.animations.length;i++) {
+                clearInterval(POKE.animations[i]);
+            }
+        }
     },
     
     Pokemon: function(pokeData, nickname, id, name, hp, maxHp, attack, defense,
@@ -83,14 +100,40 @@ var POKE = {
         // update display in sidebar
         this.goldTagHandle.html(this.gold);        
         return true;
+    },
+    
+    Audio: function(src, auto, loop, pushTo) {
+        auto = auto || false;
+        loop = loop || false;
+        audioElement = document.createElement("audio");
+        audioElement.setAttribute("src",src);
+        if (auto) {
+            audioElement.setAttribute("autoplay", "autoplay");
+        }
+        if (loop) {
+            audioElement.setAttribute("loop","loop")
+        }
+        
+        this.audio=audioElement;
+        this.play=function(){this.audio.play()};
+        this.pause=function(){this.audio.pause()};
+        this.restart=function(){
+            this.audio.pause();
+            this.audio.currentTime = 0;
+            this.audio.play();
+        };
+        
+        if (pushTo) {
+            pushTo.push(this);
+        }
+        
+        return this;
     }
 };
 
 $(document).ready(function() {
 	// DOM is ready
 	var poke=POKE;
-
-
         
         // Functions
         var wiggle = function(item,times) {
@@ -106,23 +149,31 @@ $(document).ready(function() {
             }
         };
         
-        var attackAnim = function(item, times) {
+        var attackAnim = function(item, times, sound) {
             var timer = 0;
             var i;
             
             var attackSwitch = function() {
                 item.toggleClass("attacking");
             };
-
+            
+            if (sound&&poke.Settings.playSfx) {
+                poke.sfx.attack.play();
+            }
+        
             for (i=0; i<times*2; i++) {
                 timer+=90;
                 window.setTimeout(attackSwitch,timer);
             }
         };
         
-        var jump = function(item, times, doAttack) {
+        var jump = function(item, times, doAttack, sound) {
             var timer = 0;
             var i;
+            
+            if (sound&&poke.Settings.playSfx) {
+                poke.sfx.jump.play();
+            }
             
             var jumpSwitch = function() {
                 item.toggleClass("jumping");
@@ -143,37 +194,40 @@ $(document).ready(function() {
         };
         
         
-        var comboAttack = function(item) {
+        var comboAttack = function(item, sound) {
             if (!item.hasClass("block")) {
                 item.addClass("block");
                 comboAttack(item);
                 // block for 2 sec
                 window.setTimeout(function() {item.removeClass("block");},1500);
-
-            wiggle(item,2);
-            window.setTimeout(function(){jump(item,1);},400);
-            window.setTimeout(function(){attackAnim(item,2);},650);
+                
+                if (sound&&poke.Settings.playSfx) {
+                    poke.sfx.comboAttack.play();
+                }
+                wiggle(item,2);
+                window.setTimeout(function(){jump(item,1);},400);
+                window.setTimeout(function(){attackAnim(item,2);},650);
             }
 
         };
         
         
-        var someAnimation = function(item) {
+        var someAnimation = function(item,sound) {
             var delay;
             var times;
-
+            var jumpSound = sound;
             // 1-2:jump, 4-5:wiggle, 3-6:attack, 7:jumpAttack, 8:wigglejump, 9:combo!
             type = Math.round(Math.random()*9);
             if (type===0) return;
             // 0-2 seconds to delay (3-5 total)
             delay = Math.random()*2000;
-
-            if ([1,2,3,8].includes(type)){
+            
+            if ([1,2,3,7,8].includes(type)){
                 // do it 2-4 times
                 times = Math.round(Math.random()*2+2);
-                
+                if (type===7) jumpSound = false;
                 window.setTimeout((function() {
-                    jump(item,times);
+                    jump(item,times,false,jumpSound);
                 }),delay);
             };
             
@@ -182,18 +236,18 @@ $(document).ready(function() {
                 times = Math.round(Math.random()*2+2);
                 
                 window.setTimeout((function() {
-                    wiggle(item,times);
+                    wiggle(item,times,sound);
                 }),delay);
             };
             
             if ([3,6,7].includes(type)){
                 // do it 2-4 times
                 times = Math.round(Math.random()*2+2);
-                attackAnim(item,times);
+                attackAnim(item,times,sound);
             };
             
             if (type === 9) {
-                comboAttack(item);
+                comboAttack(item,sound);
             };
             
         };
@@ -488,7 +542,7 @@ $(document).ready(function() {
             if (index === 3) {
                 finishSetup();
             }
-        }
+        };
         
         var finishSetup = function() {
             
@@ -510,6 +564,48 @@ $(document).ready(function() {
             // display combat log and buttons
 
         };
+        
+        var setSfx = function(value) {
+           var audioImg = $("#sfxImg");
+            var audioBtn = $("#sfxButton");
+            value = value || poke.Settings.playSfx;
+            if (value === "toggle") {
+                value = !poke.Settings.playSfx;
+            }
+            if (value === true) {
+                audioBtn.removeClass("btn-danger");
+                audioImg.attr("src","sprites/sfx-on.png");
+                poke.Settings.playSfx=true;
+                localStorage["pokeSettings"]=JSON.stringify(poke.Settings);
+            } else if  (value === false) {
+                audioBtn.addClass("btn-danger");
+                audioImg.attr("src","sprites/sfx-off.png");
+                poke.Settings.playSfx=false;
+                localStorage["pokeSettings"]=JSON.stringify(poke.Settings);
+            } 
+        };
+        
+        var setAudio = function(value) {
+            var audioImg = $("#audioImg");
+            var audioBtn = $("#audioButton");
+            value = value || poke.Settings.playAudio;
+            if (value === "toggle") {
+                value = !poke.Settings.playAudio;
+            }
+            if (value === true) {
+                poke.bgm.restart();
+                audioBtn.removeClass("btn-danger");
+                audioImg.attr("src","sprites/audio-on.png");
+                poke.Settings.playAudio=true;
+                localStorage["pokeSettings"]=JSON.stringify(poke.Settings);
+            } else if  (value === false) {
+                poke.bgm.pause();
+                audioBtn.addClass("btn-danger");
+                audioImg.attr("src","sprites/audio-off.png");
+                poke.Settings.playAudio=false;
+                localStorage["pokeSettings"]=JSON.stringify(poke.Settings);
+            }
+        };
 
         var saveGame = function() {
             poke.SaveData.gold = poke.gold;
@@ -522,7 +618,15 @@ $(document).ready(function() {
             if (cache) poke.Cache.pokeData = JSON.parse(cache);
             var cache2 = localStorage["pokeIndexCache"];
             if (cache2) poke.Cache.pokeIndexData = JSON.parse(cache2);
-
+        };
+        
+        var loadSettings = function() {
+            var settings = localStorage["pokeSettings"];
+            if (settings) {
+                poke.Settings = JSON.parse(settings);
+            }
+            setAudio();
+            setSfx();
         };
         
         var loadSave = function() {
@@ -535,6 +639,13 @@ $(document).ready(function() {
                 console.log(i);
                 addToSidebar(poke.party1[i]);
             }
+        };
+        
+        var generateSfx = function() {
+            var path="audio/sfx/";
+            poke.sfx.jump = new poke.Audio(path+"Mimic1.wav");
+            poke.sfx.attack = new poke.Audio(path+"Cut.wav");
+            poke.sfx.comboAttack = new poke.Audio(path+"MegaPunch.wav")
         };
         
         // generate browsing table tags
@@ -581,17 +692,6 @@ $(document).ready(function() {
             poke.buttonArray = $("#browseContainer .browseBtnNum");
         };
         
-        // Pika dance
-        var pika1=$("#pikaSprite1");
-        var pika2=$("#pikaSprite2");
-        comboAttack(pika1);
-        comboAttack(pika2);
-        poke.animations.push(setInterval(function() {
-            someAnimation(pika1);
-        },2000));
-        poke.animations.push(setInterval(function() {
-            someAnimation(pika2);
-        },2000));
         
         loadCache();
         loadSave();
@@ -603,13 +703,29 @@ $(document).ready(function() {
             pokeRequest();
         };
         
+        poke.bgm=new poke.Audio('audio/battle-trainer.mp3',false,poke.audio);
+        loadSettings();
+        generateSfx();
+    
+        // Pika dance
+        var pika1=$("#pikaSprite1");
+        var pika2=$("#pikaSprite2");
+        comboAttack(pika1,true);
+        comboAttack(pika2);
+        poke.animations.push(setInterval(function() {
+            someAnimation(pika1,true);
+        },2000));
+        poke.animations.push(setInterval(function() {
+            someAnimation(pika2,true);
+        },2000));
+        
         poke.goldTagHandle = $("#goldAmount");
         generateBrowseTable();
         
         //Event handlers
         $("#browseButton").click(function() {
 
-            
+            poke.stopAnimations("all");
             if (!$("#browseButton").hasClass("active")) {
                 return;
             } else fillBrowseContainer(0);
@@ -698,8 +814,15 @@ $(document).ready(function() {
         });
         
         $("#settingsButton").click(function() {
-            console.log('settings');
             $("#settingsWindow").removeClass("hidden");
+        });
+        
+        $("#sfxButton").click(function() {
+            setSfx("toggle");
+        });
+        
+        $("#audioButton").click(function() {
+            setAudio("toggle");
         });
         
         $("#settingsWindow button").click(function() {
